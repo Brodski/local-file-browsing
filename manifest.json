@@ -1,0 +1,48 @@
+{
+   "manifest_version": 2,
+   "description": "A better way to browse files: less-restricted from the OS",
+   "name": "Local File Viewer",
+   "content_scripts": [ {
+      "js": [ "content-script.js" ],
+      "run_at": "document_start",
+      "matches": [ "file:///*" ]
+   }],
+   "background": {
+      "scripts": ["background-script.js"],
+      "persistent": false
+   },
+   "options_page": "popup/popup.html",
+   "page_action": {
+      "default_icon": {
+        "16": "popup/icon16.png"
+      },
+      "default_title": "Local Viewer",
+      "default_popup": "popup/popup.html"
+   },
+   "icons": {
+       "16": "popup/icon16.png"
+   },
+   "LOLweb_accessible_resources": [
+     "localfiles_print.css",
+     "img/arrow_left.png",
+     "img/arrow_right.png",
+     "img/arrow_up.png",
+     "img/zoom_in.png",
+     "img/zoom_out.png",
+     "img/play.png",
+     "img/pause.png",
+     "img/ffwd.png",
+     "img/r_right.png",
+     "img/r_left.png",
+     "img/save.png",
+     "img/edit.png",
+     "img/fillscreen.png",
+     "img/gear.png",
+     "img/thumbs.png",
+     "about.html"
+   ],
+   "permissions": [
+      "tabs", "webNavigation", "storage", "<all_urls>"
+   ],
+   "version": "0.0.0.41"
+}
