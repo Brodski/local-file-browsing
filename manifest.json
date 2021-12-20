@@ -3,10 +3,16 @@
    "description": "A better way to browse files: less-restricted from the OS",
    "name": "Local File Viewer",
    "content_scripts": [ {
-      "js": [ "content-script.js" ],
-      "run_at": "document_start",
-      "matches": [ "file:///*" ]
-   }],
+         "js": [ "content-script.js" ],
+         "run_at": "document_start",
+         "matches": [ "file:///*" ]
+      },
+      {
+         "js": ["contentScriptLoaded.js"],
+         "run_at": "document_idle",
+         "matches": ["file:///*"]
+      }
+   ],
    "background": {
       "scripts": ["background-script.js"],
       "persistent": false
@@ -22,8 +28,8 @@
    "icons": {
        "16": "popup/icon16.png"
    },
-   "LOLweb_accessible_resources": [
-     "localfiles_print.css",
+   "web_accessible_resources": [
+     "node_modules/freezeframe/dist/freezeframe.min.js",
      "img/arrow_left.png",
      "img/arrow_right.png",
      "img/arrow_up.png",
