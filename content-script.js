@@ -7,8 +7,12 @@
   initInjectBS()
   initAddedClasses()
   setupListener()
-  await convertElesToImgs()
-  // workOnTRows()
+  // convertElesToImgs()
+  // let imgLinks = document.querySelectorAll
+  makeThumbNails("tr a[href$='jpg'], tr a[href$='gif'], tr a[href$='jpeg'], tr a[href$='webp'], tr a[href$='png']", "img")
+  
+  
+  makeThumbNails("tr a[href$='mp4'], tr a[href$='webm'], tr a[href$='m4v']", "video")
 })();
 
 /////////////////////////////////////////////////////////////////
@@ -45,27 +49,10 @@ function initAddedClasses() {
   items.forEach( (item) => item.className += " item_wrap")
 }
 
-const getQueryImgsString = () => {
-  return "tr a[href$='jpg'], tr a[href$='gif'], tr a[href$='jpeg'], tr a[href$='webp']"
-  // // let theQuery = ''
-  // // ['jpg', 'gif', 'jpeg', 'webp'].forEach(imgType => { theQuery += " tr a[href$='" + imgType + "'], " }).slice(0, -2)
-  // let imgTypesList = ['jpg', 'gif', 'jpeg', 'webp', 'png']
-  // let theQuery = ''
-  // imgTypesList.forEach(imgType => {
-  //     theQuery = theQuery + "tr a[href$='" + imgType + "'], "
-  // })
-  // return theQuery.slice(0, -2)
-}
-
 function convertElesToImgs() {
+  
   console.time("convertElesToImgs")
   console.log("start convertElesToImgs")
-  // let itemsMain = document.querySelectorAll('tr.item_wrap')
-  // for (let i=0; i<itemsMain.length; i++) {
-  //   itemsMain[i].querySelectorAll("tr a[href$='jpg'], tr a[href$='gif'], tr a[href$='jpeg'], tr a[href$='webp']")
-  // }
-
-
 
   let imgLinks = document.querySelectorAll("tr a[href$='jpg'], tr a[href$='gif'], tr a[href$='jpeg'], tr a[href$='webp'], tr a[href$='png']")
   for (let i=0; i < imgLinks.length; i++) {
@@ -73,42 +60,20 @@ function convertElesToImgs() {
     // imgLinks[i].querySelector("img").remove() // The file type icon?? maybe we keep
     console.log(imgLinks[i])
     let myText = ''
-    let myDiv = document.createElement('div')
     imgLinks[i].childNodes.forEach( x => {
       if (x.nodeType == Node.TEXT_NODE) {
         myText += x.textContent
         x.remove()
       }
     })
-    // console.log("myText")
-    // console.log(myText)
     let fileIcon = imgLinks[i].querySelector("img:not(.item_tag)")
-    // console.log("fileIcon")
-    // console.log(fileIcon.outerHTML)
     let htmlz =`
       ${fileIcon.outerHTML}
       <div class=' caption_title'> ${myText} </div>
       <img class='item_img' src='${imgLinks[i].getAttribute("href")}'/> 
     `
     imgLinks[i].innerHTML = htmlz
-
-
-    // imgLinks[i].querySelector(".caption_wrap')").insertBefore(fileIcon, imgLinks[i].querySelector(".caption_title"))
-    // imgLinks[i].parentNode
-
-    // myDiv.innerText = myText
-    // myDiv.className += " caption_title"
-    // imgLinks[i].appendChild(myDiv)
-
-
-    // let newImg = document.createElement("img")
-    // newImg.className +=  " item_img"
-    // newImg.setAttribute("src", imgLinks[i].getAttribute("href"))
-    // imgLinks[i].appendChild(newImg)
-
-    // let myDiv = document.createElement('div')
-    // myDiv.innerText = myText
-    
+    // workOnTRows2(imgLinks[i])  
 
   }
   console.log("end convertElesToImgs")
@@ -117,9 +82,6 @@ function convertElesToImgs() {
 
 
 function workOnTRows() {
-  console.log("hello!!1231312312313")
-  console.log(' document.querySelectorAll(".item_wrap")')
-  console.log( document.querySelectorAll(".item_wrap"))
   document.querySelectorAll(".item_wrap").forEach( (tr) => {
     let img = tr.querySelector('td:nth-child(1)')
     let size = tr.querySelector('td:nth-child(2)')
@@ -127,15 +89,99 @@ function workOnTRows() {
     const width = (ele ) => {
       return ele.getClientRects()[0].width
     }
-    console.log('================================')
-    console.log(img)
-    console.log("sizeWidth", size.getClientRects()[0].width)
-    console.log("dateWidth", date.getClientRects()[0].width)
-    console.log("imgWidth", img.getClientRects( )[0].width)
-     console.log(width(date) + width(size) > width(img))
+    // console.log('================================')
+    // console.log(img)
+    // console.log("sizeWidth", size.getClientRects()[0].width)
+    // console.log("dateWidth", date.getClientRects()[0].width)
+    // console.log("imgWidth", img.getClientRects( )[0].width)
+    // console.log(width(date) + width(size) > width(img))
     if (width(date) + width(size) > width(img)) {
-      console.log(date)
       date.className += " undo-abs"
     }
   })
+}
+
+
+function makeThumbNails(queryString, fileType) {
+  
+
+  console.time("convertElesToImgs")
+  console.log("start convertElesToImgs")
+  let links = document.querySelectorAll(queryString)
+  for (let i=0; i < links.length; i++) {
+    links[i].className += " anchor_wrap "
+    // imgLinks[i].querySelector("img").remove() // The file type icon?? maybe we keep
+    console.log(links[i])
+    let myText = ''
+    links[i].childNodes.forEach( x => {
+      if (x.nodeType == Node.TEXT_NODE) {
+        myText += x.textContent
+        x.remove()
+      }
+    })
+    let fileIcon = links[i].querySelector("img:not(.item_tag)")
+    let htmlz =`
+      ${fileIcon.outerHTML}
+      <div class=' caption_title'> ${myText} </div>
+      <${fileType} class='item_img' src='${links[i].getAttribute("href")}' loading="lazy" preload="metadata" /> 
+    `
+    links[i].innerHTML = htmlz
+
+    // Shift HTML, positioning img/vid preview on top, then title + info on bottom
+    let xxx = links[i].insertBefore(links[i].querySelector(".item_img"), links[i].children[0])
+    console.log('yeah', xxx)
+
+    if (fileType == "img") {
+      setTimeout(workOnTRows, 300) // some goofy img hack. B/c apparently window.onload comes too soon.
+    }
+    if (fileType == "video") {
+      let vid = links[i].querySelector("video")
+      
+      vid.addEventListener("mouseenter", (e) => {
+        const divide = 10
+        const intervalTimeout = 800
+        let hovering = true
+
+        console.log("IN!!!!")
+        console.log("vid.duration", vid.duration)
+        console.log("divide", divide)
+        console.log("vid.duration / divide ", vid.duration / divide)
+
+        previewVid(vid, vid.duration / divide)
+
+        const loopy = ()=> {
+          setTimeout( () => { 
+            previewVid(vid, vid.duration / divide)
+            if (hovering) {
+              loopy()
+            }
+          }, intervalTimeout)
+        }
+        loopy()
+        vid.addEventListener("mouseout", (e) => {
+          // previewVid(vid, vid.duration / 8)
+          console.log("OUT!!!!!")
+          hovering = false
+          clearTimeout(timeoutID)
+        }) 
+        
+      }) 
+    }
+
+  }
+  console.log("end convertElesToImgs")
+  console.timeEnd("convertElesToImgs")
+
+}
+
+function previewVid(vid, nextSkip){
+  // setTimeout( () => {
+    vid.currentTime += nextSkip
+    if (vid.currentTime + nextSkip >= vid.duration) {
+      // vid.currentTime = Math.floor(Math.random() * vid.duration)   // ranom positon
+      vid.currentTime =  Math.floor(Math.random() * 20) / 2; // random between 0-10, 20 possibilities 
+      console.log("preview-> RESET")
+    }
+    console.log("preview-> going to", vid.currentTime)
+  // }, 300)
 }
