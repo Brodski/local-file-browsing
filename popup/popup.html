@@ -1,10 +1,45 @@
 <html>
 <head>
   <style>
+    label {
+      display: block;
+    }
+    .subtext {
+      font-style: italic;
+      padding-left: 10px;
+    }
   </style>
   <script src="common.js"></script>
   <script src="popup.js"></script>
   <title>Popup</title>
+  <meta charset="UTF-8" />
 </head>
-<body></body>
+<body>
+  <div> Popup!</div>
+  
+  <fieldset>
+  </fieldset> 
+  <fieldset>
+    <legend>Thumbnails</legend>
+       <label> <input type="number" id="size" min="50" max="1000" placeholder="150"> Height (px) </label> 
+        <label> <input type="checkbox" id="gifAuto">Autoplay gifs </label> 
+        <label> <input type="checkbox" id="videoPreviewOff">Disable video preview </label>
+
+      <div class="subtext">(Checking these two might improve performance)</div>
+    </label>
+  </fieldset>
+  
+  <fieldset>
+    <legend>Style</legend>
+      <label> <input type="checkbox" id="layout1"> Layout 1: Grid </label> 
+      <label> <input type="checkbox" id="layout2"> Layout 2: Compact </label> 
+      <label> <input type="checkbox" id="themeDark1"> Dark theme </label> 
+      <label> <input type="checkbox" id="themeDark2"> Dark theme 2 </label> 
+      <label> <input type="checkbox" id="hideTitles"> Hide Titles </label> 
+      <label> <input type="checkbox" id="hideMetadata"> Hide Metadata </label> 
+    </fieldset>
+  <button id="save" type="submit">Save</button>
+  <button id="hideTitles" >Hide Titles</button>
+</body>
+<script src="popupjs.js"></script>
 </html>

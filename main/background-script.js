@@ -6,22 +6,18 @@
     } 
     else if (message.action == "hello") {
       console.log("recieved hello from BS")
+
+      console.log("Background, sender.tab.id", sender.tab.id)
+      chrome.tabs.sendMessage(sender.tab.id, {
+        action: "hello",
+      });
     } 
     else if (message.action == "loaded") {
-
       console.log('msg load')
-      
-      document.addEventListener("load", () => {
-        console.log("loaded1")
-      })
-      window.addEventListener("load", () => {
-        console.log("loaded2")
-      })
     }
-    console.log("Background, sender.tab.id", sender.tab.id)
-    chrome.tabs.sendMessage(sender.tab.id, {
-      action: "hello",
-    });
+    else if (message.action == "hideTitles") {
+      console.log('HIDE HIDE !!! ')
+    }
   })
 }())
 
@@ -30,7 +26,7 @@ function injectThatCss() {
   var css = "body { border: 20px dotted pink; }";
   var insertingCSS = browser.tabs.insertCSS({
     // code: css,
-    file: './styleFile.css'
+    file: 'main/styleFile.css'
   });
-  insertingCSS.then(console.log("YES"), console.log("NOPE :(") );
+  insertingCSS.then(console.log("YES"), console.log("NOPE :("), console.log("then this") );
 }

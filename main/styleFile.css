@@ -13,10 +13,49 @@ table {
 
 
 /****************************************/
+/********      FORMAT PRE     **********/
+/****************************************/
 
+/***** ITEMS *****/
+body > table > tbody > tr {
+  position: relative;
+  line-height: 13px;
+}
+
+body > table > tbody > tr {
+  position: relative;
+  line-height: 13px;
+}
+
+body > table > tbody > tr > td{
+  padding: 0; 
+}
+
+/* size */
+body > table > tbody > tr > td:nth-child(2) { 
+  display: inline-flex;
+  margin-top: -4px;
+}
+/* Date */
+body > table > tbody > tr > td:nth-child(3) {
+  display: inline-flex;
+  position: absolute;
+  right: 0;
+}
+body > table > tbody > tr > td.undo-abs {
+  display: block ;
+  position: static;
+}
+
+/****************************************/
+/****************************************/
+
+
+/****** Body ******/
 .dir::before, .file > img {
   margin-inline-end: unset;
   margin-inline-start: unset;
+  /* ??? */
   max-width: 16px;
   max-height: 16px;
   vertical-align: middle;
@@ -25,8 +64,7 @@ table {
 .dir, .symlink, .file {
   margin-inline-start: unset;
 }
-.dir::before, .file > img {
-}
+
 td:not(:first-child) {
   width: unset;
 }
@@ -56,7 +94,6 @@ td:first-child > a {
 }
 body > table > tbody > tr {
   display: block;
-  /* display: grid; */
 }
 body > table > tbody > tr > td {
   white-space: unset;
@@ -64,7 +101,6 @@ body > table > tbody > tr > td {
 }
 table.ellipsis {
   width: unset;
-  /* border-spacing: 0; */
 }
 table.ellipsis > tbody > tr > td {
   overflow: unset;
@@ -99,53 +135,28 @@ body > table > thead > tr > th:not(:last-child):after {
   margin-inline-end: unset;
   text-align: unset;
 }
-body > table > tbody > tr {
-  position: relative;
-  line-height: 13px;
-}
 
-body > table > tbody > tr > td{
-  padding: 0; 
-  /* line-height: 12px; */
-}
-/* size */
-body > table > tbody > tr > td:nth-child(2) { 
-  display: inline-flex;
-  /* order: 1; */
-  margin-top: -4px;
-}
-/* Date */
-body > table > tbody > tr > td:nth-child(3) {
-  display: inline-flex;
-  position: absolute;
-  right: 0;
-  /* order: 3 */
-}
-body > table > tbody > tr > td.undo-abs {
-  display: block ;
-  position: static;
-}
-/* body > table > tbody > tr > td:nth-child(4):before {
-  content: "|";
-  padding-left: 2px;
-  padding-right: 2px;
-} */
-/* time */
-/* body > table > tbody > tr > td:nth-child(4) {
-  display: inline-flex;
-  order: 2
-} */
 
 /****************************************/
 /********         ITEMS        **********/
 /****************************************/
-.dir::before, .file > .item_img {   
-  display: table-row;
-  max-height: 150px;
-  max-width:  var(--my-grid-width);
-  width: auto;
-}
 
+/*******  Pre load *******/
+body > table > tbody > tr:not(.item_wrap) a {
+  display: block;
+  overflow: clip;
+  width: 150px;
+  height: 150px;
+}
+body > table > tbody > tr:not(.item_wrap) {
+/* body > table > tbody > tr { */
+  width: 150px;
+  height: 150px;
+}
+/*************************/
+
+
+/*** Post load ***/
 .caption_title  {
   display: table-caption;
   width: 100%;
@@ -157,33 +168,99 @@ body > table > tbody > tr > td.undo-abs {
   text-indent: 16px;
 }
 
-.anchor_wrap   > img:not(.item_img), .anchor_wrap   > video:not(.item_img) {
+.anchor_wrap > img:not(.item_img), 
+.anchor_wrap > video:not(.item_img) {
   display: block;
   width: var(--my-caption-line-height);
 }
 
-.grid .dir::before, .file > .item_img {   
-  width: auto;
+.dir::before, 
+.file > .item_img {   
+  display: table-row;
   max-height: 150px;
-  max-width: unset;
+  /* height: 150px; */
+  max-width:  var(--my-grid-width);
+  width: auto;
+}
+.grid .dir::before, 
+.file > .item_img {   
+  /* width: auto;
   max-width:  var(--my-grid-width);
   justify-self: center;
   margin-inline-end: unset;
-  margin-inline-start: unset;
+  margin-inline-start: unset; */
+  /* max-height: 150px; */
+  height: 150px;
 }
 
 .anchor_wrap {
   word-break: break-all;
   display: inline-block;
-  /* content-visibility: auto; */
+  /* height: 150px; */
 }
 .grid .anchor_wrap {
   word-break: break-all;
   display: grid;
-  /* place-items: center; */
 
 }
 
+/***********************/
+
+/********  Icons  ********/
+.caption_title_icon {
+  border-top: 1px solid #1000003b;
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+.folder_icon {
+  width: 32px;
+  height: 32px;
+  padding-bottom: 4px;
+}
+a.dir::before {
+  content: unset;
+}
+.anchor_wrap_icon {
+  width: 150px;
+  display: block;
+  overflow: hidden;
+}
+/***************************/
+
+/********  Hide Toggle  ********/
+body.hide_title .item_wrap .caption_title, 
+body.hide_title .item_wrap .anchor_wrap img:not(.item_img)  {
+  display: none;
+}
+body.hide_metadata .item_wrap td:nth-child(2), 
+body.hide_metadata .item_wrap td:nth-child(3),
+body.hide_metadata .item_wrap td:nth-child(4)  {
+  display: none;
+}
+
+/******************************/
+/********  FreezeFrame ********/ 
+/******************************/
+.item_img .ff-image,
+.ff-container.ff-inactive .ff-image, 
+.ff-container.ff-active .ff-image,
+.ff-ready, 
+.ff-container, 
+.ff-container .ff-canvas {
+  display: table-row;
+  max-height: 150px;
+}
+
+[class^="ff-"], [class^="ff-"] > *:not([class='.ff-overlay']) {
+  display: table-row;
+  max-height: 150px;
+
+}
+.ff-container .ff-overlay {
+  width: 32px;
+  height: 32px;
+}
+/*******************/
 /****************************************/
 /********         GRID         **********/
 /****************************************/
@@ -200,10 +277,20 @@ body.grid > table > tbody {
   grid-auto-rows: auto; 
   grid-gap: 10px;
 }
-
+.visibilityOn {
+  visibility: visible;
+}
+.visibilityOff {
+  visibility: hidden;
+}
 body> table > tbody {
   display: flex;
   flex-wrap: wrap;
   grid-gap: 10px;
 }
+/* body > table > tbody.mainGrid {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 10px;
+} */
 
