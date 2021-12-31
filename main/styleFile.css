@@ -142,14 +142,25 @@ body > table > thead > tr > th:not(:last-child):after {
 /****************************************/
 
 /*******  Pre load *******/
-body > table > tbody > tr:not(.item_wrap) a {
+
+/* body > table > tbody > tr:not(.item_wrap) a {
   display: block;
   overflow: clip;
   width: 150px;
+} */
+body > table > tbody > tr:not(.item_wrap):not(.nothing_wrap) {
+
+  width: 150px;
   height: 150px;
+
 }
-body > table > tbody > tr:not(.item_wrap) {
-/* body > table > tbody > tr { */
+
+
+/* body > table > tbody > tr:not(.item_wrap) a,
+body > table > tbody > tr:not(.nothing_wrap) a { */
+body > table > tbody > tr:not(.item_wrap):not(.nothing_wrap) a {
+  display: block;
+  overflow: clip;
   width: 150px;
   height: 150px;
 }

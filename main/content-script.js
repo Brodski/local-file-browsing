@@ -4,11 +4,12 @@ const videoQueryStringConst = "tr a[href$='mp4'], tr a[href$='webm'], tr a[href$
 const imageQueryStringConst = "tr a[href$='jpg'], tr a[href$='gif'], tr a[href$='jpeg'], tr a[href$='webp'], tr a[href$='png']";
 let options;
 let queue;
+let globalCountId = 0;
 // https://github.com/otiai10/chrome-extension-es6-import
 (async () => {
   // let css = initInjectCSS()
   initAddedClasses()
-
+  let idsPromise = setupIdsOnEveryLink()
   console.log('hello!!!')
   const src = chrome.runtime.getURL('main/common.js');
   const src2 = chrome.runtime.getURL('main/Queue.js');
@@ -21,14 +22,22 @@ let queue;
   // })
   console.log("options")
   console.log(options)
-  console.log("Queue")
-  console.log(Queue)
-  queue = new Queue.Queue( (ele) => {
-    doThumbnailAux(ele)
-    // doFreezeFrame(ele)
+  queue = new Queue.Queue( async (ele) => {
+     doThumbnailAux(ele)
+    }, async (ele) => {
+     doFreezeFrame(ele)
   });
-  // queue.callback2 = doFreezeFrame;
+  // queue.setCallback2(doFreezeFrame)
+  console.log("queue")
+  console.log(queue)
 
+  console.log("freeze")
+  console.log(doFreezeFrame)
+  // window.doFreezeFrame = doFreezeFrame
+
+  console.time("idlinks")
+  await idsPromise
+  console.timeEnd("idlinks")
   setupListener()
   await initIntersectionObs() 
   // initIntersectionObsVisibililty()
@@ -96,14 +105,25 @@ const doThumbnailAux = (target) => {
   else {
     makeDefaultThumbnail(target)
   }
+  console.log("done with thumbnail inside", target)
 }
 
 const doFreezeFrame = (target) => {
   const queryX = "tr a[href$='gif'] img:not([src^='moz=icon'])"
+  let img = target.querySelector(queryX)
   if (target.querySelector(queryX)) {
-
+    target.style.visibility = "visible";
+    console.log("?????", img.complete)
+    if (img.tagName.toLowerCase() == "img" && !img.complete) {
+      console.log("Re running")
+      console.log(img.tagName.toLowerCase())
+      console.log(img.complete)
+      setTimeout(()=> doFreezeFrame(target), 500)
+      return
+    }
     console.log("freeze exists s/t", target.querySelector(queryX))
     target.style.visibility = "visible";
+
     new Freezeframe(target.querySelector(queryX), {
       trigger: "hover",
       overlay: true,
@@ -112,6 +132,14 @@ const doFreezeFrame = (target) => {
   }
 }
 
+function setupIdsOnEveryLink() {
+  let links = document.querySelectorAll('body >table > tbody > tr')
+  for (let i=0; i< links.length; i++) {
+    // links[i].setAttribute("id", i)
+    // links[i].id = i
+    links[i].id = i
+  }
+}
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -124,33 +152,16 @@ const doFreezeFrame = (target) => {
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 function initIntersectionObsVisibililty() {
-  // initHide()
-  initVisible()
-}
-
-function initVisible() {
   const options = {
     threshold: 0,
     rootMargin: "-50px 0px -50px 0px"
   }
-
   // When elements enter, visiblity=on
   const observer =  new IntersectionObserver( (entries) => {
-    const queryX = "tr a[href$='gif'] img:not([src^='moz=icon'])"
     entries.forEach( entry => {
       
       if (entry.isIntersecting) {
-        // console.log("intersecting", entry.target)
-        // console.log("gif query?", entry.target.querySelector(queryX))
         entry.target.style.visibility = "visible";
-
-        // if (entry.target.querySelector(queryX)) {
-        //   new Freezeframe(entry.target.querySelector(queryX), {
-        //     trigger: "hover",
-        //     overlay: true,
-        //     responsive: false
-        //   })
-        // }
       }
     })
   }, options)
@@ -159,7 +170,6 @@ function initVisible() {
   const observerOut = new IntersectionObserver( (entries) => {
     entries.forEach( entry => {
       if (!entry.isIntersecting) {
-        // console.log("gif OUT!", entry.target)
         entry.target.style.visibility = "hidden";
       }
     })
@@ -172,6 +182,10 @@ function initVisible() {
   })
 }
 
+function initVisible() {
+  
+}
+
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 
@@ -179,45 +193,55 @@ function initIntersectionObs() {
   let firstRunComplete = false
   let count = 0;
   const options = {
-    threshold: 0
+    threshold: .3,
     // rootMargin: "-200px 0px -200px 0px"
   }
   
   const observer = new IntersectionObserver( (entries) => {
     entries.forEach( entry => {
       if (entry.isIntersecting) {
-        let semaphore = false;
         if (!firstRunComplete && count < 15){
-          console.log(count, ' running on', entry.target)
           count ++
           queue.enqueue(entry.target)
-          setTimeout( () => { firstRunComplete = true}, 50);
+          setTimeout( () => { firstRunComplete = true}, 200);
           observer.unobserve(entry.target)
           return
         }
-
+        count++
+        
+        // We had a timeout to check if the file is on the user's screen. B/c if the user scrolls through a big file
+        // then this app will render and process every file from the top to where were the user scrolled to 
+        // (maybe to the bottom of the file, thus processing everything). 
+        // If the user has 500+ files on the directory then huge performance cost.
         setTimeout( () => {
-          var bounding = entry.target.getBoundingClientRect();
+          // console.log('--------------------------------')
+          // console.log(entry.target)
+          //  console.log(entry.target.id)
+          let ele = document.getElementById(entry.target.id)
+          // console.log(ele)
 
-          console.log('2----------------------------------')
-          // console.log(entry.target.getBoundingClientRect())          
-          // console.log("bottom, top", bounding.bottom, bounding.top)
-          // console.log((bounding.bottom >= 0)  && (bounding.top <= window.innerHeight))
+          let bounding = entry.target.getBoundingClientRect();
+          // if ( (bounding.bottom < 0)  && (bounding.top > window.innerHeight) ) {
+          //     console.log("NOPE!!!!!!",Math.round(bounding.bottom), Math.round(bounding.top), ele )
+          // }
+          
           // if ( (bounding.top >= 0 && bounding.left) >= 0  && (bounding.right <= (window.innerWidth || document.documentElement.clientWidth) ) && (bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) ) ) {  // https://gomakethings.com/how-to-test-if-an-element-is-in-the-viewport-with-vanilla-javascript/
-          if ( (bounding.bottom + 200 >= 0)  && (bounding.top - 200 <= window.innerHeight) ) {
+          // If X is in viewport and it hasn't been processed by the queue yet. 
+          // 1) Sometimes 'isIntersecting' will trigger twice b/c the timeout hasnt unobserved it
+          // 2) And sometimes while in that 1st trigger it will be processed and dequeued
+          // 3) By the time the second setTimeout runs via the 2nd intersecting observer it will be out of the queue and processed, and thus added to the queue again.
+          // ----------
+          // bottom viewport
+          if ( (bounding.bottom >= 0)  && (bounding.top <= window.innerHeight) && !entry.target.classList.contains("item_wrap")) {
+            // console.log(count, '----------------------------------')
             
-            if (semaphore == true) {
-              return
-            }
-            semaphore = true;
-            console.log("< ------------- YES", entry.target)
-            // doThumbnailAux(entry.target)
-            queue.enqueue(entry.target)
             observer.unobserve(entry.target)
-          } else {
-            // console.log('Not in the viewport... ', entry.target);
-          }
-        }, 1000)
+            queue.enqueue(entry.target)
+            // console.log('unoberserving: ', entry.target)
+            // console.log(entry .target.getBoundingClientRect())          
+            // console.log("bottom, top", (bounding.bottom >= 0)  && (bounding.top <= window.innerHeight), Math.round(bounding.bottom), Math.round(bounding.top))
+          } 
+        }, 300) // arbitrary number. not in sync with anything on page either
 
         // observer.unobserve(entry.target)
       }
@@ -246,7 +270,7 @@ function initAddedClasses() {
   let items    = document.querySelectorAll("body > table > tbody > tr")
   mainGrid.className += " mainGrid "  
   heading.className += " mainHeading "  
-  items.forEach( (item) => item.className += " item_wrap")
+  // items.forEach( (item) => item.className += " item_wrap")
 }
 
 /////////////////
@@ -254,6 +278,7 @@ function makeDefaultThumbnail(tr){
   let htmlz
   let anchor_wrap = tr.querySelector("a")
   anchor_wrap.className += " anchor_wrap_icon ";
+  tr.className += " nothing_wrap ";
   let fileIcon = anchor_wrap.querySelector("img:not(.item_tag)")  
 
   // 2 // Title rearrange
@@ -281,15 +306,16 @@ function makeDefaultThumbnail(tr){
 
 function makeThumbNails2(tr, fileType, queryString) {
 
-  // 1
+  
+  tr.className += " item_wrap ";
+  // 2 // Title rearrange
   let attributes;
   let anchor_wrap = tr.querySelector(queryString)
   anchor_wrap.className += " anchor_wrap ";
 
-  // 2 // Title rearrange
   let myText = getTextSpecial(anchor_wrap)
   if (fileType == "video") {
-    attributes =  "preload='metadata' muted='true' width='150px'" 
+    attributes =  " preload='metadata' muted='true' width='150px' "
   } else {
     attributes = 'loading="lazy"'
   }
@@ -342,26 +368,16 @@ function setupVideo(vid) {
 }
 
 function setupImage(tr) {
-
   setTimeout( () => {
     let img = tr.querySelector('td:nth-child(1)')
     let size = tr.querySelector('td:nth-child(2)')
     let date = tr.querySelector('td:nth-child(3)')
-    // let time = tr.querySelector('td:nth-child(4)')
-      const width = (ele ) => {  return ele.getClientRects()[0].width }
-      if (width(date) + width(size) > width(img)) {
-        date.className += " undo-abs"
-      }
+    const width = (ele ) => {  return ele.getClientRects()[0].width }
+    if (width(date) + width(size) > width(img)) {
+      date.className += " undo-abs"
+    }
     }, 300) // some goofy img hack. B/c apparently window.onload comes too soon.
 }
-
-
-
-
-
-//////////////
-
-
 
 
 function previewVid(vid, nextSkip){
