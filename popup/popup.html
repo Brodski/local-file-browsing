@@ -8,6 +8,10 @@
       font-style: italic;
       padding-left: 10px;
     }
+    hr {
+      /* margin-left: -14px;
+      margin-right: -14px; */
+    }
   </style>
   <script src="common.js"></script>
   <script src="popup.js"></script>
@@ -18,15 +22,15 @@
   <div> Popup!</div>
   
   <fieldset>
-  </fieldset> 
-  <fieldset>
     <legend>Thumbnails</legend>
-       <label> <input type="number" id="size" min="50" max="1000" placeholder="150"> Height (px) </label> 
-        <label> <input type="checkbox" id="gifAuto">Autoplay gifs </label> 
-        <label> <input type="checkbox" id="videoPreviewOff">Disable video preview </label>
-
-      <div class="subtext">(Checking these two might improve performance)</div>
-    </label>
+        <label> <input type="number" id="size" min="50" max="1000" placeholder="150"> Height (px) </label> 
+        <label> <input type="checkbox" id="isNoPreviewImg">Disable image preview </label>
+        <label> <input type="checkbox" id="isNoPreviewVideo">Disable video preview </label>
+        <label> <input type="checkbox" id="isAdvPreview">Advance preview <i> (shows 10th second in) </i> </label>
+        <label> <input type="checkbox" id="gifAuto">Diable gif auto pause </label> 
+        <div class="subtext">(Checking the above two will decrease performance, not recommened when viewing many files)</div>
+    <!-- </label> -->
+    <hr/>
   </fieldset>
   
   <fieldset>
@@ -37,9 +41,22 @@
       <label> <input type="checkbox" id="themeDark2"> Dark theme 2 </label> 
       <label> <input type="checkbox" id="hideTitles"> Hide Titles </label> 
       <label> <input type="checkbox" id="hideMetadata"> Hide Metadata </label> 
-    </fieldset>
+  </fieldset>
+  
+  <fieldset>
+    <legend>Style</legend>
+      <label> <input type="radio" name="sort" value="none-sort"> Default </label> 
+      <label> <input type="radio" name="sort" value="date-earliest"> Date: Earliest </label> 
+      <label> <input type="radio" name="sort" value="date-latest"> Date: Latest </label> 
+      <label> <input type="radio" name="sort" value="name-az"> Name: A-Z </label> 
+      <label> <input type="radio" name="sort" value="name-za"> Name: Z-A </label> 
+      <label> <input type="radio" name="sort" value="size-smallest"> Size: Smallest </label> 
+      <label> <input type="radio" name="sort" value="size-largest"> Size: Largest </label> 
+
+  </fieldset>
   <button id="save" type="submit">Save</button>
-  <button id="hideTitles" >Hide Titles</button>
+  <button id="hideTitlesBtn" >Hide Titles</button>
+  <span id="saveMsg"> </span>
 </body>
 <script src="popupjs.js"></script>
 </html>

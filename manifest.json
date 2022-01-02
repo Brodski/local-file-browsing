@@ -8,8 +8,8 @@
       "matches": [ "file:///*" ]
    },
    {
-      "css": [ "main/styleFile.css" ],
-      "run_at": "document_start",
+      "js": [ "main/loaded.js" ],
+      "run_at": "document_end",
       "matches": [ "file:///*" ]
    }
    ],

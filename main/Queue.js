@@ -4,16 +4,12 @@
 // [e1, e2, e3, ...e]
 // shift = e1 <----- [    e2, e3, ...e]
 export class Queue {
-  constructor(callback, callback2) {
+  constructor(callback, callback2) { // Good enough for this project
     this.items = [];
     this.callback = callback;
     this.callback2 = callback2;
-    this.rate = 50
+    this.rate = 10
     this.isRunning = false
-  }
-
-  setCallback2() {
-    this.callback2 = callback2;
   }
 
   enqueue(item) { // for the purpose of this. only unique
@@ -24,7 +20,8 @@ export class Queue {
     }
     this.items.push(item)
     // console.log("Queue -----> adding idx=", idx, item)
-    if (this.isRunning == false) {
+    if ( this.isRunning == false) {
+    // if (true || this.isRunning == false) {
       this.processQueue()
     }
   }
@@ -38,20 +35,22 @@ export class Queue {
       return
     }
     if (this.items.length > 0) {
-      
+      this.isRunning = true;      
       let ele = this.dequeue() 
-      await this.callback(ele).then(()=> console.log("1done", ele))
-      // .then( () => console.log("ele transition...", ele))
-      .then( async ()=> await this.callback2(ele))
-      .then(()=> console.log("2done", ele))
-      // console.log('done with callback 1')
-      
-      // console.log('done with callback 2')
-      this.isRunning = true;
-    }
-    setTimeout(() => {  
-      this.processQueue()
-    }, this.rate)
 
+      // console.log("QUEUE", this.items.length, "running queue on ", ele)
+      await this.callback(ele)
+      // .then(()=> console.log("1done", ele))
+      .then( ()=> this.callback2(ele))
+      // .then(()=> console.log("2done", ele))
+
+      
+
+      this.processQueue()
+      // setTimeout(() => {  
+      //   this.processQueue()
+      // }, 2000)
+
+    }
   }
 }

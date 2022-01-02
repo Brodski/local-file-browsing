@@ -6,15 +6,20 @@ export function main() {
 
 export async function getOptions() {
   let result = browser.storage.local.get({ 
-    size: 150,
+    size: 150, //<--- defaults to 150
     gifAuto: false,
-    videoPreviewOff: false,
+    hideMetadata: false,
+    hideTitles: false,
     layout1: true,
     layout2: false,
     themeDark1: false,
     themeDark2: false,
+    isNoPreviewImg: false,
+    isNoPreviewVideo: false,
+    isAdvPreview: true,
+    sort: 'none-sort'
   });
-  // await result.then((result) => { 
+  //  result.then((result) => { 
   //   console.log("Got 123: ", result)  
   // })
   return result
