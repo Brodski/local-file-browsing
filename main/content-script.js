@@ -5,18 +5,17 @@ let queue;
 let globalCountId = 0;
 // https://github.com/otiai10/chrome-extension-es6-import
 (async () => {
-  // let css = initInjectCSS()  
-  let css = initInjectCSS("grid")
-  let idsPromise = setupIdsOnEveryLink()
   console.log('hello!!!')
+  // let css = initInjectCSS("grid")
+  let idsPromise = setupIdsOnEveryLink()
   const src = chrome.runtime.getURL('main/common.js');
   const src2 = chrome.runtime.getURL('main/Queue.js');
-  const mainContent = await import(src);
   const Queue = await import(src2);
-  mainContent.main(/* chrome: no need to pass it */);
-  optionsExt = await mainContent.getOptions();
-  letsGo()
+  const Common = await import(src);
+  optionsExt = await Common.getOptions();
+  Common.main();
   initAddedClasses()
+  initOrderingSort()
   // options.then( (result) => { 
   //   console.log("Got 12345: ", result)  
   // })
@@ -78,6 +77,7 @@ function setupListener() {
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
+// Called by the queue. via queue's higher order function
 const doThumbnailAux = (target) => {
   let isImg = target.querySelector(imageQueryStringConst)
   let isVideo = target.querySelector(videoQueryStringConst)
@@ -119,15 +119,24 @@ const doFreezeFrame = (target) => {
 function initAddedClasses() {
   let mainGrid = document.querySelector("body > table > tbody")
   let heading  = document.querySelector("body > table > thead")
+  let html  = document.querySelector("body > table > thead")
   mainGrid.className += " mainGrid "  
   heading.className += " mainHeading "  
+console.log("doing this", `--my-item-height: ${optionsExt.height}px`)
+  document.documentElement.style.setProperty('--my-item-height', optionsExt.height+"px");
+  document.documentElement.style.setProperty('--my-grid-width', optionsExt.width + "px");
+  console.log(document.documentElement.style.cssText )
 
   if (optionsExt.hideMetadata){
     document.querySelector('body').classList.toggle('hide_metadata')
-
   }
   if (optionsExt.hideTitles) {
     document.querySelector('body').classList.toggle('hide_title')
+  }
+  if (optionsExt.darkmode && optionsExt.darkmode != 'None') { //option's value attribue default to the stuff inside if no value is given
+    document.querySelector('body').classList.add(optionsExt.darkmode)
+    document.querySelector('body').classList.add('darkmode')
+    document.getElementsByTagName('html')[0].classList.add('darkmode')
   }
 }
 
@@ -149,15 +158,27 @@ const getTextSpecial = (anchor_wrap) => {
   return myText
 }
 
-function letsDoIt(column, order) {
+// #################################################################### //
+// #################################################################### //
+// #################################################################### //
+//  Cleverly inject functions in the page, inject variables from here 
+//  into the page, and use variables & functions in the page
+// #################################################################### //
+// #################################################################### //
+// #################################################################### //
+
+
+// Cleverly added this function to the page, where it has access to the page's variables & functions
+// We are in page-space, not in content-script space
+// Sorts items on the page
+function sortItems(column, order) { 
   // name = 0
   // size = 1
   // Modified = 2
+  // gRows, gOrderBy, and gTable already exist in the page.
   if (!gRows) {
     gRows = Array.from(gTBody.rows);
   }
-  // var order;
-  // order = "asc";
   gOrderBy = column;
   gTable.setAttribute("order-by", column);
   gRows.sort(compareRows);
@@ -171,49 +192,61 @@ function letsDoIt(column, order) {
     for (var i = gRows.length - 1; i >= 0; i--)
       gTBody.appendChild(gRows[i]);
   gTable.appendChild(gTBody);
-
 }
-function alertThis() {
-  // alert("WHUAT")
+// Calls the inital Sorting function and puts our options on the page.
+function setupSort() {
+  console.log("optionExt.sort")
+  console.log(optionsExt.sort)
+  let column, order;
+  if (optionsExt.sort == "date-newest"){
+    column = 2
+    order = "desc"
+  } else if (optionsExt.sort == "date-oldest") { 
+    column = 2
+    order = "asc"
+  } else if (optionsExt.sort == "name-az") {
+    column = 0
+    order = "asc"
+  } else if (optionsExt.sort == "name-za") {
+    column = 0
+    order = "desc"
+  } else if (optionsExt.sort == "size-smallest") {
+    column = 1
+    order = "asc"
+  } else if (optionsExt.sort == "size-largest") {
+    column = 1
+    order = "desc"
+  }
+
   if (document.readyState == 'complete') {
-    console.log("document.readyState 2", document.readyState)
-    console.log("Bang bang")
-    console.log(gRows ? gRows : "gRows null")
-    console.log(gTable ? gTBody : "gTbody null")
-    // letsDoIt(2,"desc")
+    sortItems(column, order)
   } else {
     window.addEventListener("load", (e) => {
-      console.log("load bang")
-      console.log(gRows)
-      console.log(gTable)
-      // letsDoIt(2,"desc")
+      sortItems(2,"desc")
     })
   }
 }
 
-function letsGo() {
+function initOrderingSort() {
+  
   let script = document.createElement("script");
   let script2 = document.createElement("script");
-  script.innerHTML = letsDoIt
+  let script3 = document.createElement("script");
+  script.innerHTML = sortItems
+  script2.innerHTML = `let optionsExt=${JSON.stringify(optionsExt)};`
+  script3.innerHTML = '(' + setupSort  + ')()'
   document.body.appendChild(script)
-
-  script2.innerHTML = '(' + alertThis  + ')()'
   document.body.appendChild(script2)
+  document.body.appendChild(script3)
 
-  console.log(alertThis)
-  console.log("optionExt.sort")
-  console.log(optionsExt.sort)
-  // alertThis()
-  // window.alertThis()
-  // alertThis()
 }
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
-///////////////            INTESECTIOn          /////////////////
-///////////////            INTESECTIOn          /////////////////
-///////////////            INTESECTIOn          /////////////////
-///////////////            INTESECTIOn          /////////////////
-///////////////            INTESECTIOn          /////////////////
+///////////////            INTESECTION          /////////////////
+///////////////            INTESECTION          /////////////////
+///////////////            INTESECTION          /////////////////
+///////////////            INTESECTION          /////////////////
+///////////////            INTESECTION          /////////////////
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -227,14 +260,12 @@ function initIntersectionObsVisibililty() {
   // When elements enter, visiblity=on
   const observer =  new IntersectionObserver( (entries) => {
     entries.forEach( entry => {
-      // console.log("=======================")
-      // console.log("isIntersecting",entry.isIntersecting, entry.target)
+      // console.log("isIntersecting " + entry.target.id ,entry.isIntersecting, entry.target)
       
       if (entry.isIntersecting) {
-        // console.log("querySelector", entry.target.querySelector('.item_img'))
         entry.target.querySelector('.item_img').style.visibility = "visible";
-        // entry.target.style.visibility = "visible";
-      }
+      } 
+      
     })
   }, options)
 
@@ -242,7 +273,6 @@ function initIntersectionObsVisibililty() {
   const observerOut = new IntersectionObserver( (entries) => {
     entries.forEach( entry => {
       if (!entry.isIntersecting) {
-        // entry.target.style.visibility = "hidden";
         entry.target.querySelector('.item_img').style.visibility = "hidden";
       }
     })
@@ -279,27 +309,18 @@ function initIntersectionObs() {
         }
         count++
         
-        // We had a timeout to check if the file is on the user's screen. B/c if the user scrolls through a big file
-        // then this app will render and process every file from the top to where were the user scrolled to 
-        // (maybe to the bottom of the file, thus processing everything). 
+        // We had a timeout to check if the file is on the user's screen. B/c if the user scrolls through a big file then this app will render
+        // and process every file from the top to where were the user scrolled to (maybe to the bottom of the file, thus processing everything). 
         // If the user has 500+ files on the directory then huge performance cost.
-        setTimeout( () => {
-    
-          
-          
+        setTimeout( () => {                 
           // If X is in viewport and it hasn't been processed by the queue yet. 
           // 1) Sometimes 'isIntersecting' will trigger twice b/c the timeout hasnt unobserved it
           // 2) And sometimes while in that 1st trigger it will be processed and dequeued
           // 3) By the time the second setTimeout runs via the 2nd intersecting observer it will be out of the queue and processed, and thus added to the queue again.
 
           let bounding = entry.target.getBoundingClientRect();
-          // console.log('--------------------------------')
-          // console.log('offset=', offsetMargin , entry.target)
-          // console.log(bounding.bottom)
-          // console.log(bounding.top )
-          // console.log((bounding.bottom >= 0 - offsetMargin)  ,  (bounding.top <= window.innerHeight + offsetMargin)   )      
 
-          if ( (bounding.bottom >= 0 - offsetMargin)  && (bounding.top <= window.innerHeight + offsetMargin) && !entry.target.classList.contains("item_wrap")) { 
+          if ( (bounding.bottom >= 0 - offsetMargin)  && (bounding.top <= window.innerHeight + offsetMargin) && !(entry.target.classList.contains("item_wrap") || entry.target.classList.contains("nothing_wrap")) ) { 
             // console.log(count, '----------------------------------')
             
             observer.unobserve(entry.target)
@@ -406,6 +427,7 @@ function setupVideo(vid) {
   const intervalTimeout = 800
   vid.addEventListener("mouseenter", (e) => {
     let hovering = true;
+    console.log(e.target)
     e.target.style.visibility = "visible";
 
     previewVid(vid, vid.duration / divide)
@@ -433,6 +455,10 @@ function setupImage(tr) {
       date.className += " undo-abs"
     }
     }, 300) // some goofy img hack. B/c apparently window.onload comes too soon.
+    tr.querySelector('.item_img').addEventListener('mouseover', e => {
+      console.log(e.target)
+      e.target.style.visibility = "visible"
+    })
 }
 
 

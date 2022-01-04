@@ -3,7 +3,10 @@
 body {    
   display: block;
   min-width: unset;
-  max-width: unset  ;
+  max-width: unset;
+  padding-top: 10px;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 table {
@@ -50,6 +53,9 @@ body > table > tbody > tr > td.undo-abs {
 /****************************************/
 /****************************************/
 
+:root { 
+  padding-inline: 1em;
+}
 
 /****** Body ******/
 .dir::before, .file > img {
@@ -113,12 +119,11 @@ table.ellipsis > tbody > tr > td {
 
 :root {
   --my-grid-width: 150px;
-
   --my-item-height: 200px;
-  --my-item-width: var(--my-grid-width);
 
   --my-caption-line-height: 16px;
   --file-icon-width: 150px;
+
 }
 
 /****************************************/
@@ -170,7 +175,13 @@ body > table > tbody > tr:not(.item_wrap):not(.nothing_wrap) a *:first-child {
 }
 /*************************/
 
-
+.nothing_wrap {
+  /* padding-bottom: 20px;
+  padding-right: 10px; */
+  background-color: #08080812;
+  border: 1px solid #ffffff1c;
+  min-height: calc(var(--my-item-height) * 0.5);
+}
 /*** Post load ***/
 .caption_title  {
   display: table-caption;
@@ -219,7 +230,7 @@ body > table > tbody > tr:not(.item_wrap):not(.nothing_wrap) a *:first-child {
 /***********************/
 /********  Icons  ********/
 .caption_title_icon {
-  border-top: 1px solid #1000003b;
+  /* border-top: 1px solid #1000003b; */
   padding-bottom: 2px;
   padding-top: 2px;
 }
@@ -231,6 +242,7 @@ body > table > tbody > tr:not(.item_wrap):not(.nothing_wrap) a *:first-child {
 a.dir::before {
   content: unset;
 }
+
 .anchor_wrap_icon {
   width: var(--my-grid-width);
   display: block;
@@ -238,10 +250,16 @@ a.dir::before {
 }
 /***************************/
 /********  Hide Toggle  ********/
+
+body.hide_title .nothing_wrap .caption_title, 
 body.hide_title .item_wrap .caption_title, 
+body.hide_title .nothing_wrap .anchor_wrap img:not(.item_img),
 body.hide_title .item_wrap .anchor_wrap img:not(.item_img)  {
   display: none;
 }
+body.hide_metadata .nothing_wrap td:nth-child(2), 
+body.hide_metadata .nothing_wrap td:nth-child(3), 
+body.hide_metadata .nothing_wrap td:nth-child(4), 
 body.hide_metadata .item_wrap td:nth-child(2), 
 body.hide_metadata .item_wrap td:nth-child(3),
 body.hide_metadata .item_wrap td:nth-child(4)  {
@@ -260,9 +278,9 @@ body.hide_metadata .item_wrap td:nth-child(4)  {
 [class^="ff-"], 
 [class^="ff-"] > *:not([class='.ff-overlay']) {
   display: table-row;
-  max-height: var(--my-grid-width);
+  max-height: var(--my-item-height);
   max-width: var(--my-grid-width);
-  max-height: 100%;
+  /* max-height: 100%; */
   max-width: 100%;
 
 }
@@ -283,9 +301,12 @@ body > table > tbody {
   flex-wrap: wrap;
   display: grid;
   grid-template-columns: repeat( auto-fit, minmax( var(--my-grid-width), 1fr));
-  grid-auto-rows: minmax(var(--my-grid-width), auto);
+  /* grid-auto-rows: minmax(var(--my-grid-width), auto); */
+  grid-auto-rows: auto;
   place-items: start center;
   grid-gap: 0px;
+  grid-row-gap: 5px;
+  /* grid-template-columns: repeat( auto-fit, 250px); */
 }
 
 
@@ -294,4 +315,80 @@ body > table > tbody {
 }
 .visibilityOff {
   visibility: hidden;
+}
+
+
+/****************************************/
+/********      dark mode       **********/
+/****************************************/
+
+:root.darkmode { 
+  background-color: #121212;
+  background-color: #292929;
+}
+
+:root body.darkmode {
+  background-color: #121212;
+  background-color: #292929;
+  
+}
+/* 
+:root body a:visited {
+  color: teal;
+} */
+body.darkmode .caption_title_icon {
+  /* border-top: 1px solid white; */
+}
+
+
+a {
+  color: inherit;
+}
+.t1 {
+  color: white;
+}
+.t1 > h1,
+body.t1 > table > thead > tr {
+  color:#97b8cc;
+}
+
+.t2 {
+  color: #ff903e;
+}
+.t2 > h1,
+body.t2 > table > thead > tr {
+  color: #d3c821;
+}
+
+.t3  {
+  color: #dabc19;
+}
+.t3 > h1,
+body.t3 > table > thead > tr {
+  color: #e78d4b
+}
+
+.t4  {
+  color: #b39bf5;
+}
+
+.t4 > h1,
+body.t4 > table > thead > tr {
+  color: #65ade1
+}
+
+.t5  {
+  color: #49b2ff;
+}
+.t5 > h1,
+body.t5 > table > thead > tr {
+  color: #b39bf5;
+}
+
+.t6  {
+  color: #5ae3a2;
+}
+.t6 > h1,
+body.t6 > table > thead > tr {
+  color: #ccb605;
 }

@@ -12,6 +12,39 @@
       /* margin-left: -14px;
       margin-right: -14px; */
     }
+    select {
+      color: white;
+    }
+    
+    .t1 {
+      color: white;
+      background-color: #292929;
+    }
+    .t2 {
+      color: #f48a3c;
+      background-color: #292929;
+    }
+    .t3 {
+      color: #dabc19;
+      background-color: #292929;
+    }
+    .t4 {
+      color: #b39bf5;
+      background-color: #292929;
+    }
+    .t5 {
+      color: #49b2ff;
+      background-color: #292929;
+    }
+    .t6 {
+      color: #5ae3a2;
+      background-color: #292929;
+    }
+    .default {
+      color: black;
+      background-color: white;
+    }
+
   </style>
   <script src="common.js"></script>
   <script src="popup.js"></script>
@@ -23,7 +56,8 @@
   
   <fieldset>
     <legend>Thumbnails</legend>
-        <label> <input type="number" id="size" min="50" max="1000" placeholder="150"> Height (px) </label> 
+        <label> <input type="number" id="height" min="50" max="1000" placeholder="200"> Height px (200, 335,500,1000 recommened)</label> 
+        <label> <input type="number" id="width" min="50" max="1000" placeholder="150"> Width px (150, 200,300,700 recommened) </label> 
         <label> <input type="checkbox" id="isNoPreviewImg">Disable image preview </label>
         <label> <input type="checkbox" id="isNoPreviewVideo">Disable video preview </label>
         <label> <input type="checkbox" id="isAdvPreview">Advance preview <i> (shows 10th second in) </i> </label>
@@ -41,13 +75,22 @@
       <label> <input type="checkbox" id="themeDark2"> Dark theme 2 </label> 
       <label> <input type="checkbox" id="hideTitles"> Hide Titles </label> 
       <label> <input type="checkbox" id="hideMetadata"> Hide Metadata </label> 
+      <label>Dark Theme:</label>
+        <select id="themes" onchange="onDropdownChange">
+          <option class="default" > None </option>
+          <option value="t1" class="t1">This is Theme 1</option>
+          <option value="t2" class="t2">This is Theme 2</option>
+          <option value="t3" class="t3">This is Theme 3</option>
+          <option value="t4" class="t4">This is Theme 4</option>
+          <option value="t5" class="t5">This is Theme 5</option>
+          <option value="t6" class="t6">This is Theme 6</option>
+        </select>
   </fieldset>
-  
   <fieldset>
     <legend>Style</legend>
-      <label> <input type="radio" name="sort" value="none-sort"> Default </label> 
-      <label> <input type="radio" name="sort" value="date-earliest"> Date: Earliest </label> 
-      <label> <input type="radio" name="sort" value="date-latest"> Date: Latest </label> 
+      <label> <input type="radio" name="sort" value="default-sort"> Default </label> 
+      <label> <input type="radio" name="sort" value="date-newest"> Date: Newest </label> 
+      <label> <input type="radio" name="sort" value="date-oldest"> Date: Oldest </label> 
       <label> <input type="radio" name="sort" value="name-az"> Name: A-Z </label> 
       <label> <input type="radio" name="sort" value="name-za"> Name: Z-A </label> 
       <label> <input type="radio" name="sort" value="size-smallest"> Size: Smallest </label> 

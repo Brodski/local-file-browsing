@@ -7,7 +7,7 @@
     if (message.action == "injectGridCSS") {
       injectThatGridCss()
     } 
-    else if (message.action == "hello") {
+    if (message.action == "hello") {
       console.log("recieved hello from BS")
 
       console.log("Background, sender.tab.id", sender.tab.id)
@@ -15,11 +15,14 @@
         action: "hello",
       });
     } 
-    else if (message.action == "loaded") {
+    if (message.action == "loaded") {
       console.log('msg load')
     }
-    else if (message.action == "hideTitle") {
+    if (message.action == "hideTitles") {
+
       console.log('HIDE HIDE !!! ')
+      console.log(sender)
+      console.log(message)
     }
   })
 }())

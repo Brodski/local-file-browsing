@@ -1,6 +1,7 @@
 let optionsExt;
 let mainContent;
-const defaultSize = 150;
+const defaultHeight = 200;
+const defaultWidth = 150;
 
 (async () => {
   console.log("wtf")
@@ -23,28 +24,24 @@ document.getElementById('hideTitlesBtn').addEventListener('click', hideTitlesMsg
 
 
 async function save() {
-  console.log("SAVEEED!")
-  const getSizeWithErrorCheck = () => {
-    let num = parseInt(document.querySelector("#size").value)
+
+  const getSizeWithErrorCheck = (query) => {
+    let num = parseInt(document.querySelector(query).value)
     if (Number.isNaN(num)) {
-      return document.querySelector("#size").value  //defaultSize
+      return query == "#height" ? defaultHeight : defaultWidth  //defaultSize
     }
     num = Math.min(Math.max(num, 50), 1000)
-    document.querySelector("#size").value = num
+    document.querySelector(query).value = num
     return num
   }
-
-  console.log('document.querySelector("#hideTitles").checked', document.querySelector("#hideTitles").checked)
-
     
   let sortRadios = [].slice.call(document.querySelectorAll("[name='sort']"))
   let sortSelected = sortRadios.filter((inp)=> { return inp.checked })
-  
-  console.log("sortSelected")
-  console.log(sortSelected)
 
   let res = browser.storage.local.set({
-    size: getSizeWithErrorCheck(),
+    height: getSizeWithErrorCheck('#height'),
+    width: getSizeWithErrorCheck('#width'),
+
     gifAuto: document.querySelector("#gifAuto").checked,
     isNoPreviewVideo: document.querySelector("#isNoPreviewVideo").checked,
     isNoPreviewImg: document.querySelector("#isNoPreviewImg").checked,
@@ -54,6 +51,7 @@ async function save() {
     layout2: document.querySelector("#layout2").checked,
     themeDark1: document.querySelector("#themeDark1").checked,
     themeDark2: document.querySelector("#themeDark2").checked,
+    darkmode: document.querySelector("#themes").value,
 
     hideTitles: document.querySelector("#hideTitles").checked,
     hideMetadata: document.querySelector("#hideMetadata").checked,
@@ -85,7 +83,9 @@ async function restore_options() {
   optionsExt.then((result) => { 
     console.log("Got: ", result)  
     
-    document.querySelector("#size").value = result.size
+    document.querySelector("#height").value = result.height
+    document.querySelector("#width").value = result.width
+    
     document.querySelector("#gifAuto").checked = result.gifAuto
     document.querySelector("#isNoPreviewVideo").checked = result.isNoPreviewVideo
     document.querySelector("#isNoPreviewImg").checked = result.isNoPreviewImg
@@ -98,6 +98,7 @@ async function restore_options() {
     document.querySelector("#hideTitles").checked = result.hideTitles
     document.querySelector("#hideMetadata").checked = result.hideMetadata
     document.querySelector("#hideMetadata").checked = result.hideMetadata
+    document.querySelector("#themes").value = result.darkmode 
     if (document.querySelector(`[value='${result.sort}']`)) {
       document.querySelector(`[value='${result.sort}']`).checked = true
     }
@@ -107,6 +108,19 @@ async function restore_options() {
   }, onError);
   
 }
+
+
+function onDropdownChange() {
+  
+  // this.className=this.options[this.selectedIndex].className
+  let select = document.getElementById('themes')
+  select.classList = select.options[select.selectedIndex].className
+}
+
+window.addEventListener('load', () => {
+  onDropdownChange()
+})
+document.getElementById('themes').addEventListener("change", ()=> onDropdownChange() )
 
 function hideTitlesMsgBg() {
   chrome.runtime.sendMessage({

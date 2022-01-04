@@ -4,6 +4,7 @@
    "name": "Local File Viewer",
    "content_scripts": [ {
       "js": [ "main/content-script.js" ],
+      "css": ["main/styleGrid.css"],
       "run_at": "document_idle",
       "matches": [ "file:///*" ]
    },
