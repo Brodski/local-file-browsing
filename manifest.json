@@ -7,11 +7,6 @@
       "css": ["main/styleGrid.css"],
       "run_at": "document_idle",
       "matches": [ "file:///*" ]
-   },
-   {
-      "js": [ "main/loaded.js" ],
-      "run_at": "document_end",
-      "matches": [ "file:///*" ]
    }
    ],
    "background": {

@@ -13,7 +13,7 @@ export async function getOptions() {
     hideTitles: false,
     isNoPreviewImg: false,
     isNoPreviewVideo: false,
-    isAdvPreview: true,
+    isAdvPreview: false,
     sort: 'default-sort',
     darkmode: null,
   });
