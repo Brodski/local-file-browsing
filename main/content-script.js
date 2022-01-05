@@ -1,11 +1,13 @@
-const videoQueryStringConst = "tr a[href$='mp4'], tr a[href$='webm'], tr a[href$='m4v'], tr a[href$='mkv']";
-const imageQueryStringConst = "tr a[href$='jpg'], tr a[href$='gif'], tr a[href$='jpeg'], tr a[href$='webp'], tr a[href$='png']";
+const videoQueryStringConst = "tr a[href$='mp4' i], tr a[href$='webm' i], tr a[href$='m4v' i], tr a[href$='mkv' i]"
+const imageQueryStringConst = "tr a[href$='jpg' i], tr a[href$='gif' i], tr a[href$='jpeg' i], tr a[href$='webp' i], tr a[href$='png' i], tr a[href$='jfif' i], tr a[href$='cms' i]"
 let optionsExt;
 let queue;
 let globalCountId = 0;
 // https://github.com/otiai10/chrome-extension-es6-import
 (async () => {
   console.log('hello!!!')
+  console.log(videoQueryStringConst)
+  console.log(imageQueryStringConst)
   // let css = initInjectCSS("grid")
   let idsPromise = setupIdsOnEveryLink()
   const src = chrome.runtime.getURL('main/common.js');
@@ -96,7 +98,7 @@ const doThumbnailAux = (target) => {
 }
 
 const doFreezeFrame = (target) => {
-  const queryX = "tr a[href$='gif'] img:not([src^='moz=icon'])"
+  const queryX = "tr a[href$='gif' i] img:not([src^='moz=icon'])"
   let img = target.querySelector(queryX)
   if (img && img.tagName.toLowerCase() == "img") {
     if (!img.complete) {
@@ -218,11 +220,13 @@ function setupSort() {
     order = "desc"
   }
 
-  if (document.readyState == 'complete') {
+  if (document.readyState == 'complete' && optionsExt.sort != 'default-sort' ) {
     sortItems(column, order)
   } else {
     window.addEventListener("load", (e) => {
-      sortItems(2,"desc")
+      if (optionsExt.sort != 'default-sort') {
+        sortItems(column, order)
+      }
     })
   }
 }
@@ -409,11 +413,10 @@ function makeThumbNails(tr, fileType, queryString) {
   anchor_wrap.innerHTML = htmlz
   anchor_wrap.insertBefore(anchor_wrap.querySelector(".item_img"), anchor_wrap.children[0])
 
-  // 5.A // img
+  // 5
   if (fileType == "img") {    
     setupImage(tr)
   }
-  // 5.B // video
   if (fileType == "video") {
     let vid = anchor_wrap.querySelector("video")
     setupVideo(vid)
@@ -446,6 +449,7 @@ function setupVideo(vid) {
 }
 
 function setupImage(tr) {
+  // debugger
   setTimeout( () => {
     let img = tr.querySelector('td:nth-child(1)')
     let size = tr.querySelector('td:nth-child(2)')
@@ -455,8 +459,10 @@ function setupImage(tr) {
       date.className += " undo-abs"
     }
     }, 300) // some goofy img hack. B/c apparently window.onload comes too soon.
-    tr.querySelector('.item_img').addEventListener('mouseover', e => {
-      console.log(e.target)
+    let asjk = tr.querySelector('.item_img')
+    // tr.querySelector('.item_img').addEventListener('mouseover', e => {
+    asjk.addEventListener('mouseover', e => {
+      // console.log(e.target)
       e.target.style.visibility = "visible"
     })
 }
@@ -465,7 +471,6 @@ function setupImage(tr) {
 function previewVid(vid, nextSkip){
     vid.currentTime += nextSkip
     if (vid.currentTime + nextSkip >= vid.duration) {
-      // vid.currentTime = Math.floor(Math.random() * vid.duration)   // ranom positon
       vid.currentTime =  Math.floor(Math.random() * 20) / 2; // random between 0-10, 20 possibilities 
     }
 }

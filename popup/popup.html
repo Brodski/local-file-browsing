@@ -44,15 +44,21 @@
       color: black;
       background-color: white;
     }
+    button {
+    margin: 15px;
+    margin-left: 4px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding: 3px 18px 3px 18px;
+    }
 
   </style>
   <script src="common.js"></script>
   <script src="popup.js"></script>
-  <title>Popup</title>
+  <title>Better Local File Browsing</title>
   <meta charset="UTF-8" />
 </head>
 <body>
-  <div> Popup!</div>
   
   <fieldset>
     <legend>Thumbnails</legend>
@@ -60,19 +66,14 @@
         <label> <input type="number" id="width" min="50" max="1000" placeholder="150"> Width px (150, 200,300,700 recommened) </label> 
         <label> <input type="checkbox" id="isNoPreviewImg">Disable image preview </label>
         <label> <input type="checkbox" id="isNoPreviewVideo">Disable video preview </label>
-        <label> <input type="checkbox" id="isAdvPreview">Advance preview <i> (shows 10th second in) </i> </label>
+        <label> <input type="checkbox" id="isAdvPreview">Advance preview <i> (shows 10th second in a video) </i> </label>
         <label> <input type="checkbox" id="gifAuto">Diable gif auto pause </label> 
         <div class="subtext">(Checking the above two will decrease performance, not recommened when viewing many files)</div>
-    <!-- </label> -->
-    <hr/>
+        
   </fieldset>
   
   <fieldset>
     <legend>Style</legend>
-      <label> <input type="checkbox" id="layout1"> Layout 1: Grid </label> 
-      <label> <input type="checkbox" id="layout2"> Layout 2: Compact </label> 
-      <label> <input type="checkbox" id="themeDark1"> Dark theme </label> 
-      <label> <input type="checkbox" id="themeDark2"> Dark theme 2 </label> 
       <label> <input type="checkbox" id="hideTitles"> Hide Titles </label> 
       <label> <input type="checkbox" id="hideMetadata"> Hide Metadata </label> 
       <label>Dark Theme:</label>
@@ -87,7 +88,7 @@
         </select>
   </fieldset>
   <fieldset>
-    <legend>Style</legend>
+    <legend>Sort</legend>
       <label> <input type="radio" name="sort" value="default-sort"> Default </label> 
       <label> <input type="radio" name="sort" value="date-newest"> Date: Newest </label> 
       <label> <input type="radio" name="sort" value="date-oldest"> Date: Oldest </label> 
@@ -98,7 +99,7 @@
 
   </fieldset>
   <button id="save" type="submit">Save</button>
-  <button id="hideTitlesBtn" >Hide Titles</button>
+  
   <span id="saveMsg"> </span>
 </body>
 <script src="popupjs.js"></script>

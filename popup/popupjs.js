@@ -11,16 +11,7 @@ const defaultWidth = 150;
   mainContent = await import(src);
   console.log("mainContent", mainContent)
   restore_options()
-
-
 })();
-
-
-// document.addEventListener("DOMContentLoaded", restore_options)
-document.getElementById('save').addEventListener('click', save);
-document.getElementById('hideTitlesBtn').addEventListener('click', hideTitlesMsgBg);
-
-
 
 
 async function save() {
@@ -46,18 +37,10 @@ async function save() {
     isNoPreviewVideo: document.querySelector("#isNoPreviewVideo").checked,
     isNoPreviewImg: document.querySelector("#isNoPreviewImg").checked,
     isAdvPreview: document.querySelector("#isAdvPreview").checked,
-
-    layout1: document.querySelector("#layout1").checked,
-    layout2: document.querySelector("#layout2").checked,
-    themeDark1: document.querySelector("#themeDark1").checked,
-    themeDark2: document.querySelector("#themeDark2").checked,
     darkmode: document.querySelector("#themes").value,
-
     hideTitles: document.querySelector("#hideTitles").checked,
     hideMetadata: document.querySelector("#hideMetadata").checked,
-    sort: sortSelected[0].value,
-
-    
+    sort: sortSelected[0].value,    
   });
 
   res.then( (res) => {
@@ -69,8 +52,6 @@ async function save() {
       saveMsg.textContent = ""
     }, 2000)
   })
-
-
 }
 
 async function restore_options() {
@@ -85,16 +66,12 @@ async function restore_options() {
     
     document.querySelector("#height").value = result.height
     document.querySelector("#width").value = result.width
-    
+
     document.querySelector("#gifAuto").checked = result.gifAuto
     document.querySelector("#isNoPreviewVideo").checked = result.isNoPreviewVideo
     document.querySelector("#isNoPreviewImg").checked = result.isNoPreviewImg
     document.querySelector("#isAdvPreview").checked = result.isAdvPreview
 
-    document.querySelector("#layout1").checked = result.layout1
-    document.querySelector("#layout2").checked = result.layout2,
-    document.querySelector("#themeDark1").checked = result.themeDark1
-    document.querySelector("#themeDark2").checked = result.themeDark2
     document.querySelector("#hideTitles").checked = result.hideTitles
     document.querySelector("#hideMetadata").checked = result.hideMetadata
     document.querySelector("#hideMetadata").checked = result.hideMetadata
@@ -102,25 +79,19 @@ async function restore_options() {
     if (document.querySelector(`[value='${result.sort}']`)) {
       document.querySelector(`[value='${result.sort}']`).checked = true
     }
-    
-
-
   }, onError);
   
 }
 
 
-function onDropdownChange() {
-  
-  // this.className=this.options[this.selectedIndex].className
+function onDropdownChange() {  
   let select = document.getElementById('themes')
   select.classList = select.options[select.selectedIndex].className
 }
 
-window.addEventListener('load', () => {
-  onDropdownChange()
-})
+window.addEventListener('load', () => { onDropdownChange() })
 document.getElementById('themes').addEventListener("change", ()=> onDropdownChange() )
+document.getElementById('save').addEventListener('click', save);
 
 function hideTitlesMsgBg() {
   chrome.runtime.sendMessage({
