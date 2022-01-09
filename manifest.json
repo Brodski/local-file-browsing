@@ -3,7 +3,7 @@
    "description": "A better way to browse files: less-restricted from the OS",
    "name": "Local File Viewer",
    "content_scripts": [ {
-      "js": [ "main/content-script.js" ],
+      "js": ["node_modules/freezeframe/dist/freezeframe.min.js", "main/common.js", "main/Queue.js",  "main/content-script.js" ],
       "css": ["main/styleGrid.css"],
       "run_at": "document_idle",
       "matches": [ "file:///*" ]
@@ -35,5 +35,5 @@
    "permissions": [
       "tabs", "webNavigation", "storage", "<all_urls>"
    ],
-   "version": "0.0.0.41"
+   "version": "0.0.1"
 }

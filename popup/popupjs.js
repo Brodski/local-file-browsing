@@ -6,11 +6,27 @@ const defaultWidth = 150;
 (async () => {
   console.log("wtf")
   console.log("readystate?", document.readyState)
-  const src = chrome.runtime.getURL('main/common.js');
-  console.log(src)
-  mainContent = await import(src);
-  console.log("mainContent", mainContent)
+  // const src = chrome.runtime.getURL('main/common.js');
+  // console.log(src)
+  // mainContent = await import(src);
+  // console.log("mainContent", mainContent)
   restore_options()
+
+
+
+  let x = browser.extension.getBackgroundPage()
+  console.log("browserextension.getBackgroundPage(), ")
+  console.log(x)
+  console.log(x.bgHello())
+  // console.log(x.chrome)
+  // console.log(x.chrome.bgHello())
+  // console.log(x.browser.bgHello())
+  // console.log( "browser extension.getViews()")
+  // console.log( browser.extension.getViews())
+
+
+
+  // setupListener()
 })();
 
 
@@ -56,8 +72,9 @@ async function save() {
 
 async function restore_options() {
   
-
-  optionsExt = mainContent.getOptions();
+  let optionsExt = browser.extension.getBackgroundPage().getOptions()
+  // optionsExt = mainContent.getOptions();
+  // optionsExt = getOptions();
   console.log("optionsExt", optionsExt)
   const onError = (err) => { console.log("Error: ", err) }
   const onGot = (result) => { console.log("Got: ", result)  }
@@ -92,9 +109,24 @@ function onDropdownChange() {
 window.addEventListener('load', () => { onDropdownChange() })
 document.getElementById('themes').addEventListener("change", ()=> onDropdownChange() )
 document.getElementById('save').addEventListener('click', save);
+// document.getElementById('test').addEventListener('click', hideTitlesMsgBg);
 
 function hideTitlesMsgBg() {
   chrome.runtime.sendMessage({
+  // chrome.tabs.sendMessage({
     action: "hideTitles",
   });
 }
+
+// function setupListener() {
+  
+//   chrome.runtime.onMessage.addListener(function (message) {
+//     console.log("POPUP LISTENER - MSG FROM BACKGROUND -", message)
+//     if (message.action == "actiontime") {
+//       run();
+//     } 
+//     if (message.action == "hello") {
+//       console.log("he said hello !")
+//     }
+//   });  
+// }

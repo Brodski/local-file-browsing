@@ -3,7 +3,7 @@
 // head ........ tail
 // [e1, e2, e3, ...e]
 // shift = e1 <----- [    e2, e3, ...e]
-export class Queue {
+class Queue {
   constructor(callback, callback2) { // Good enough for this project
     this.items = [];
     this.callback = callback;

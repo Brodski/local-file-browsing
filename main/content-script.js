@@ -1,34 +1,38 @@
+// import Freezeframe from "freezeframe";
+
 const videoQueryStringConst = "tr a[href$='mp4' i], tr a[href$='webm' i], tr a[href$='m4v' i], tr a[href$='mkv' i]"
 const imageQueryStringConst = "tr a[href$='jpg' i], tr a[href$='gif' i], tr a[href$='jpeg' i], tr a[href$='webp' i], tr a[href$='png' i], tr a[href$='jfif' i], tr a[href$='cms' i]"
 let optionsExt;
 let queue;
 let globalCountId = 0;
+
 // https://github.com/otiai10/chrome-extension-es6-import
 (async () => {
   console.log('hello!!!')
+  hi() // https://stackoverflow.com/questions/19717126/chrome-extension-referencing-calling-other-script-functions-from-a-content-scrip
   console.log(videoQueryStringConst)
   console.log(imageQueryStringConst)
   // let css = initInjectCSS("grid")
   let idsPromise = setupIdsOnEveryLink()
-  const src = chrome.runtime.getURL('main/common.js');
-  const src2 = chrome.runtime.getURL('main/Queue.js');
-  const Queue = await import(src2);
-  const Common = await import(src);
-  optionsExt = await Common.getOptions();
-  Common.main();
-  initAddedClasses()
-  initOrderingSort()
+  console.log("content. gonna msgGetOptions")
+  setupListener()
+  // msgGetOptions()
+  console.log("1         START")
+  await getOptions2()
+  console.log("2         END")
+  optionsExt = await getOptions();
   // options.then( (result) => { 
   //   console.log("Got 12345: ", result)  
   // })
+  initAddedClasses()
+  initOrderingSort()
   console.log("optionsExt")
   console.log(optionsExt)
-  queue = new Queue.Queue( async (ele) => { doThumbnailAux(ele) }, async (ele) => { doFreezeFrame(ele) });
+  queue = new Queue( async (ele) => { doThumbnailAux(ele) }, async (ele) => { doFreezeFrame(ele) });
   console.log("queue")
   console.log(queue)
   
   await idsPromise
-  setupListener()
   await initIntersectionObs() 
   initIntersectionObsVisibililty()
   document.querySelector("#UI_showHidden").style.display = "unset";
@@ -58,8 +62,13 @@ function initInjectCSS(css) {
     });
 
   }
-}
+}    
 
+function msgGetOptions() { 
+  chrome.runtime.sendMessage({
+    action: "getOptions",
+  });
+} 
 
 function setupListener() {
   chrome.runtime.onMessage.addListener(function (message) {
@@ -69,6 +78,11 @@ function setupListener() {
     } 
     if (message.action == "hello") {
       console.log("he said hello !")
+    }
+    if (message.action == "recieveOptions") {
+      console.log("Got options")
+      console.log(message.options) //'options' name is a chrome thing. By coincidence i happen to be retrieving a vairable i also named options // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage#parameters                                    
+      optionsExt = message.options
     }
   });  
 }
@@ -124,10 +138,10 @@ function initAddedClasses() {
   let html  = document.querySelector("body > table > thead")
   mainGrid.className += " mainGrid "  
   heading.className += " mainHeading "  
-console.log("doing this", `--my-item-height: ${optionsExt.height}px`)
+  
   document.documentElement.style.setProperty('--my-item-height', optionsExt.height+"px");
   document.documentElement.style.setProperty('--my-grid-width', optionsExt.width + "px");
-  console.log(document.documentElement.style.cssText )
+  
 
   if (optionsExt.hideMetadata){
     document.querySelector('body').classList.toggle('hide_metadata')
@@ -197,8 +211,6 @@ function sortItems(column, order) {
 }
 // Calls the inital Sorting function and puts our options on the page.
 function setupSort() {
-  console.log("optionExt.sort")
-  console.log(optionsExt.sort)
   let column, order;
   if (optionsExt.sort == "date-newest"){
     column = 2
