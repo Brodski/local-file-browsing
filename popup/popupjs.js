@@ -2,6 +2,7 @@ let optionsExt;
 let mainContent;
 const defaultHeight = 200;
 const defaultWidth = 150;
+const defaultPageSize = 50;
 
 (async () => {
   console.log("wtf")
@@ -18,13 +19,6 @@ const defaultWidth = 150;
   console.log("browserextension.getBackgroundPage(), ")
   console.log(x)
   console.log(x.bgHello())
-  // console.log(x.chrome)
-  // console.log(x.chrome.bgHello())
-  // console.log(x.browser.bgHello())
-  // console.log( "browser extension.getViews()")
-  // console.log( browser.extension.getViews())
-
-
 
   // setupListener()
 })();
@@ -41,6 +35,16 @@ async function save() {
     document.querySelector(query).value = num
     return num
   }
+
+  const getPageWithErrorCheck = (query) => {
+    let num = parseInt(document.querySelector(query).value)
+    if (Number.isNaN(num)) {
+      num = defaultPageSize;
+    }
+    document.querySelector(query).value = num
+    return num
+
+  }
     
   let sortRadios = [].slice.call(document.querySelectorAll("[name='sort']"))
   let sortSelected = sortRadios.filter((inp)=> { return inp.checked })
@@ -48,6 +52,8 @@ async function save() {
   let res = browser.storage.local.set({
     height: getSizeWithErrorCheck('#height'),
     width: getSizeWithErrorCheck('#width'),
+
+    pageSize: getPageWithErrorCheck('#pageSize'),
 
     gifAuto: document.querySelector("#gifAuto").checked,
     isNoPreviewVideo: document.querySelector("#isNoPreviewVideo").checked,
@@ -83,6 +89,7 @@ async function restore_options() {
     
     document.querySelector("#height").value = result.height
     document.querySelector("#width").value = result.width
+    document.querySelector("#pageSize").value = result.pageSize
 
     document.querySelector("#gifAuto").checked = result.gifAuto
     document.querySelector("#isNoPreviewVideo").checked = result.isNoPreviewVideo

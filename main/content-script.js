@@ -13,17 +13,12 @@ let globalCountId = 0;
   console.log(videoQueryStringConst)
   console.log(imageQueryStringConst)
   // let css = initInjectCSS("grid")
-  let idsPromise = setupIdsOnEveryLink()
-  console.log("content. gonna msgGetOptions")
+  let idsPromise = initIdsOnEveryLink()
   setupListener()
-  // msgGetOptions()
   console.log("1         START")
-  await getOptions2()
+  // await getOptions2()
   console.log("2         END")
-  optionsExt = await getOptions();
-  // options.then( (result) => { 
-  //   console.log("Got 12345: ", result)  
-  // })
+  optionsExt = await getOptions(); // Common.js
   initAddedClasses()
   initOrderingSort()
   console.log("optionsExt")
@@ -36,6 +31,8 @@ let globalCountId = 0;
   await initIntersectionObs() 
   initIntersectionObsVisibililty()
   document.querySelector("#UI_showHidden").style.display = "unset";
+
+  initSplitItems()
 })();
 
 /////////////////////////////////////////////////////////////////
@@ -63,12 +60,6 @@ function initInjectCSS(css) {
 
   }
 }    
-
-function msgGetOptions() { 
-  chrome.runtime.sendMessage({
-    action: "getOptions",
-  });
-} 
 
 function setupListener() {
   chrome.runtime.onMessage.addListener(function (message) {
@@ -136,7 +127,7 @@ function initAddedClasses() {
   let mainGrid = document.querySelector("body > table > tbody")
   let heading  = document.querySelector("body > table > thead")
   let html  = document.querySelector("body > table > thead")
-  mainGrid.className += " mainGrid "  
+  // mainGrid.className += " mainGrid "  
   heading.className += " mainHeading "  
   
   document.documentElement.style.setProperty('--my-item-height', optionsExt.height+"px");
@@ -157,12 +148,113 @@ function initAddedClasses() {
 }
 
 
-function setupIdsOnEveryLink() {
+async function initIdsOnEveryLink() {
   let links = document.querySelectorAll('body >table > tbody > tr')
   for (let i=0; i< links.length; i++) {
     links[i].id = i
   }
 }
+
+function initSplitItems() {
+  let pages = [];
+  let page; 
+  let chunck = optionsExt.pageSize;
+  // console.log("chunck")
+  // console.log(chunck)
+  // console.log(chunck)
+  // console.log(chunck)
+  let everyFileInDir = document.querySelectorAll("body > table > tbody > tr");
+  let everyFileInDirArr = Array.from(everyFileInDir);
+// console.log("everyFileInDirArr.length ")
+// console.log(everyFileInDirArr.length)
+//   let loopLength = chunck > everyFileInDirArr.length ? chunck : everyFileInDirArr.length;
+//   console.log("loopLength")
+//   console.log(loopLength)
+//   console.log("chunck > everyFileInDirArr.length")
+//   console.log(chunck > )
+  // Split into chuncks
+  for (let i=0; i < everyFileInDirArr.length; i = i + chunck) {
+    page = everyFileInDirArr.slice(i, i + chunck);
+    pages.push(page)
+  }
+  
+  // split every image/video onto pages
+  let tbodyId = "tbody-"
+  for (let i=0; i < pages.length; i++) {
+    let tbody4Page = document.createElement("tbody");
+    tbody4Page.id = tbodyId + i;
+    pages[i].forEach( img => {
+      tbody4Page.appendChild(img);
+    })
+    document.querySelector("body > table").appendChild(tbody4Page)  
+    if (i == 0) { tbody4Page.classList.add("active") }
+
+  }
+
+  // create pagination elements
+  let pageNumsHtml = ""
+  for (let i=0; i < pages.length; i++) {
+    pageNumsHtml += `<button id="btn-${i}"> ${i} </button>`
+    if (i==0) {pageNumsHtml = `<button id="btn-${i}" class='active'> ${i} </button>` }
+  }
+    
+
+  let paginationHtml = `
+  <div class="pagination_wrap">
+    <div class="pagination">
+      ${pageNumsHtml}
+    </div>
+    <button class="nextBtn"> Next »</button>
+  </div>
+  `
+  let paginationComp = document.createElement("div")
+  paginationComp.innerHTML = paginationHtml
+
+  let tbodyLast = document.querySelector("body > table > tbody:last-child");
+  tbodyLast.insertAdjacentElement("afterend", paginationComp)
+
+
+
+  const removeClassFromGroup = (groupEles, className = "active") => {
+    Array.from(groupEles).forEach(function(ele) { 
+      ele.classList.remove(className);
+    })
+  }
+    
+  
+  // Add Event listener to buttons
+  const tbodyQuery = "body > table > tbody";
+  const btnsQuery = ".pagination button";
+  let btnNums = paginationComp.querySelectorAll(btnsQuery);
+  for (let i=0; i< btnNums.length; i++) {
+    if (btnNums[i]) {
+      btnNums[i].addEventListener("click", function(e) {
+        // Buttons
+        removeClassFromGroup(document.querySelectorAll(btnsQuery))
+        this.classList.add("active")
+
+        // Table / Page
+        removeClassFromGroup(document.querySelectorAll(tbodyQuery))
+        document.querySelector("#" + tbodyId + i)?.classList.add("active")
+      })
+    }
+  }
+
+  // Add Event listener to Next button
+  paginationComp.querySelector("button.nextBtn").addEventListener("click", (e) => {
+    let activeTbody = document.querySelector(tbodyQuery + ".active")
+    let activeBtn = document.querySelector( btnsQuery + ".active")
+
+    if (activeTbody.nextSibling.id.includes(tbodyId)) { // check we are not on last page
+      removeClassFromGroup(document.querySelectorAll(tbodyQuery) )
+      removeClassFromGroup(document.querySelectorAll(btnsQuery) ) 
+      activeTbody.nextSibling.classList.add("active");
+      activeBtn.nextSibling.classList.add("active");
+    }
+  })
+}
+
+
 const getTextSpecial = (anchor_wrap) => {
   let myText = ''
   anchor_wrap.childNodes.forEach( x => {
@@ -173,7 +265,6 @@ const getTextSpecial = (anchor_wrap) => {
   })
   return myText
 }
-
 // #################################################################### //
 // #################################################################### //
 // #################################################################### //
@@ -278,7 +369,8 @@ function initIntersectionObsVisibililty() {
     entries.forEach( entry => {
       // console.log("isIntersecting " + entry.target.id ,entry.isIntersecting, entry.target)
       
-      if (entry.isIntersecting) {
+      if (entry.isIntersecting && entry.target.querySelector('.item_img')) {
+        console.log("intersecting", entry.target)
         entry.target.querySelector('.item_img').style.visibility = "visible";
       } 
       
@@ -288,8 +380,8 @@ function initIntersectionObsVisibililty() {
   // When elements exit, visiblity=off // Dont know why, but splitting the observer into two works
   const observerOut = new IntersectionObserver( (entries) => {
     entries.forEach( entry => {
-      if (!entry.isIntersecting) {
-        entry.target.querySelector('.item_img').style.visibility = "hidden";
+      if (!entry.isIntersecting && entry.target.querySelector('.item_img')) {
+          entry.target.querySelector('.item_img').style.visibility = "hidden";
       }
     })
   }, options)
@@ -319,8 +411,8 @@ function initIntersectionObs() {
         if (!firstRunComplete && count < 15){
           count ++
           queue.enqueue(entry.target)
-          setTimeout( () => { firstRunComplete = true}, 200);
           observer.unobserve(entry.target)
+          setTimeout( () => { firstRunComplete = true}, 200);
           return
         }
         count++

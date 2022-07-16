@@ -146,6 +146,12 @@ body > table > thead > tr > th:not(:last-child):after {
   text-align: unset;
 }
 
+/*  Icon */
+#UI_goUp {
+  font-size: 20px;
+  border: 1px solid black;
+  box-shadow: 1px 1px 1px white, -1px -1px 1px white;
+}
 
 /****************************************/
 /********         ITEMS        **********/
@@ -226,6 +232,57 @@ body > table > tbody > tr:not(.item_wrap):not(.nothing_wrap) a *:first-child {
   display: grid;
 
 }
+
+/*******************************/
+/********   Pagination   *******/
+/*******************************/
+.pagination {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;  
+  justify-content: center;
+  list-style: none;
+  max-width: 80%;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
+  flex-wrap: wrap;
+}
+  
+.pagination button {
+  margin: 0 5px;
+  min-width: 30px;
+  font-size: 20px;
+  text-align: center;
+  border: 3px solid black;
+  box-shadow: 3px 3px 10px white, -3px -3px 10px white;
+  cursor: pointer;
+  margin-top: 40px;
+}
+
+.pagination button.active {
+  background-color: white;
+  color: black;
+  font-weight: bold;
+}
+
+body > table > tbody:not(.active) {
+  display: none;
+}
+
+.pagination_wrap .nextBtn {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  padding: 20px 50px;
+  margin-top: 50px;
+  box-shadow: 3px 3px 10px white, -3px -3px 10px white;
+  cursor: pointer;
+}
+
+  
 
 /***********************/
 /********  Icons  ********/
@@ -332,6 +389,26 @@ body > table > tbody {
   background-color: #292929;
   
 }
+
+:root {
+  --t1Color1: white;
+  --t1Color2: #97b8cc;
+
+  --t2Color1: #ff903e;
+  --t2Color2: #d3c821;
+
+  --t3Color1: #dabc19;
+  --t3Color2: #e78d4b;
+
+  --t4Color1: #b39bf5;
+  --t4Color2: #65ade1;
+
+  --t5Color1: #49b2ff;
+  --t5Color2: #b39bf5;
+
+  --t6Color1: #5ae3a2;
+  --t6Color2: #4eb3aa;
+}
 /* 
 :root body a:visited {
   color: teal;
@@ -341,54 +418,55 @@ body.darkmode .caption_title_icon {
 }
 
 
+
 a {
   color: inherit;
 }
 .t1 {
-  color: white;
+  color: var(--t1Color1);
 }
 .t1 > h1,
 body.t1 > table > thead > tr {
-  color:#97b8cc;
+  color:var(--t1Color2);
 }
 
 .t2 {
-  color: #ff903e;
+  color: var(--t2Color1);
 }
 .t2 > h1,
 body.t2 > table > thead > tr {
-  color: #d3c821;
+  color: var(--t2Color2);
 }
 
 .t3  {
-  color: #dabc19;
+  color: var(--t3Color1);
 }
 .t3 > h1,
 body.t3 > table > thead > tr {
-  color: #e78d4b
+  color: var(--t3Color2);
 }
 
 .t4  {
-  color: #b39bf5;
+  color: var(--t4Color1);
 }
 
 .t4 > h1,
 body.t4 > table > thead > tr {
-  color: #65ade1
+  color: var(--t4Color2);
 }
 
 .t5  {
-  color: #49b2ff;
+  color: var(--t5Color1);
 }
 .t5 > h1,
 body.t5 > table > thead > tr {
-  color: #b39bf5;
+  color: var(--t5Color2);
 }
 
 .t6  {
-  color: #5ae3a2;
+  color: var(--t6Color1);
 }
 .t6 > h1,
 body.t6 > table > thead > tr {
-  color: #4eb3aa;
+  color: var(--t6Color2);
 }

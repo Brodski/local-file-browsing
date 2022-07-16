@@ -1,15 +1,8 @@
 (function () {    
   chrome.runtime.onMessage.addListener(async function (message, sender) {
     console.log("Background - Recieved message from content script  ---- ", message)
-    // if (message.action == "injectCSS") {
-    //   injectThatCss()
-    // } 
-    // if (message.action == "injectGridCSS") {
-    //   injectThatGridCss()
-    // } 
     if (message.action == "hello") {
       console.log("recieved hello from BS")
-
       console.log("Background, sender.tab.id", sender.tab.id)
       chrome.tabs.sendMessage(sender.tab.id, {
         action: "hello",
@@ -31,14 +24,6 @@
       console.log('HIDE HIDE !!! ')
       console.log(sender)
       console.log(message)
-
-      
-      // let x = browser.extension.getBackgroundPage()
-      // console.log("browserextension.getBackgroundPage(), ")
-      // console.log(x)
-      // console.log( "browser extension.getViews()")
-      // console.log( browser.extension.getViews())
-
 
       chrome.tabs.sendMessage(sender.tab.id, {
         action: "hello",
@@ -63,27 +48,7 @@ async function getOptions() {
     isAdvPreview: false,
     sort: 'default-sort',
     darkmode: null,
+    pageSize: 50,
   });
-  //  result.then((result) => { 
-  //   console.log("Got 123: ", result)  
-  // })
   return result
 }
-
-// DELET THIS
-// function injectThatCss() {
-  
-//   var css = "body { border: 20px dotted pink; }";
-//   var insertingCSS = browser.tabs.insertCSS({
-//     // code: css,
-//     file: 'main/styleFile.css'
-//   });
-//   insertingCSS.then(console.log("YES"), console.log("NOPE :("), console.log("then this") );
-// }
-// function injectThatGridCss() {
-  
-//   var insertingCSS = browser.tabs.insertCSS({
-//     // code: css,
-//     file: 'main/styleGrid.css'
-//   });
-// }
