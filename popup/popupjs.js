@@ -2,23 +2,13 @@ let optionsExt;
 let mainContent;
 const defaultHeight = 200;
 const defaultWidth = 150;
-const defaultPageSize = 50;
+const defaultPageSize = 30;
 
 (async () => {
-  console.log("wtf")
-  console.log("readystate?", document.readyState)
-  // const src = chrome.runtime.getURL('main/common.js');
-  // console.log(src)
-  // mainContent = await import(src);
-  // console.log("mainContent", mainContent)
   restore_options()
-
-
-
-  let x = browser.extension.getBackgroundPage()
-  console.log("browserextension.getBackgroundPage(), ")
-  console.log(x)
-  console.log(x.bgHello())
+  // let x = browser.extension.getBackgroundPage()
+  //console.log("browserextension.getBackgroundPage(), ")
+  //console.log(x.bgHello())
 
   // setupListener()
 })();
@@ -66,7 +56,7 @@ async function save() {
   });
 
   res.then( (res) => {
-    console.log("done", res); 
+    //console.log("done", res); 
     let saveMsg = document.querySelector("#saveMsg")
     saveMsg.textContent = "Saved";
     saveMsg.style.color = "red";
@@ -81,11 +71,11 @@ async function restore_options() {
   let optionsExt = browser.extension.getBackgroundPage().getOptions()
   // optionsExt = mainContent.getOptions();
   // optionsExt = getOptions();
-  console.log("optionsExt", optionsExt)
+  //console.log("optionsExt", optionsExt)
   const onError = (err) => { console.log("Error: ", err) }
   const onGot = (result) => { console.log("Got: ", result)  }
   optionsExt.then((result) => { 
-    console.log("Got: ", result)  
+    //console.log("Got: ", result)  
     
     document.querySelector("#height").value = result.height
     document.querySelector("#width").value = result.width
@@ -120,20 +110,6 @@ document.getElementById('save').addEventListener('click', save);
 
 function hideTitlesMsgBg() {
   chrome.runtime.sendMessage({
-  // chrome.tabs.sendMessage({
     action: "hideTitles",
   });
 }
-
-// function setupListener() {
-  
-//   chrome.runtime.onMessage.addListener(function (message) {
-//     console.log("POPUP LISTENER - MSG FROM BACKGROUND -", message)
-//     if (message.action == "actiontime") {
-//       run();
-//     } 
-//     if (message.action == "hello") {
-//       console.log("he said hello !")
-//     }
-//   });  
-// }

@@ -1,5 +1,5 @@
 function hi() {
-  console.log('hi 3')
+  //console.log('hi 3')
 }
 
  async function getOptions() {
@@ -20,15 +20,4 @@ function hi() {
   //   console.log("Got 123: ", result)  
   // })
   return result
-}
-
-
-async function getOptions2() {
-
-  let sending = chrome.runtime.sendMessage({
-    action: "getOptions",
-  }).then(  ()=> console.log("sent"));
-  await sending
-  console.log("sending")
-  console.log(sending)
 }

@@ -1,29 +1,28 @@
 (function () {    
   chrome.runtime.onMessage.addListener(async function (message, sender) {
-    console.log("Background - Recieved message from content script  ---- ", message)
+    //console.log("Background - Recieved message from content script  ---- ", message)
     if (message.action == "hello") {
-      console.log("recieved hello from BS")
-      console.log("Background, sender.tab.id", sender.tab.id)
+      //console.log("recieved hello from BS")
+      //console.log("Background, sender.tab.id", sender.tab.id)
       chrome.tabs.sendMessage(sender.tab.id, {
         action: "hello",
       });
     } 
     if (message.action == "getOptions") {
-      console.log("recieved getOptions from BS")
-      console.log("Background, sender.tab.id", sender.tab.id)
+      //console.log("recieved getOptions from BS")
+      //console.log("Background, sender.tab.id", sender.tab.id)
       let optionz = await getOptions()
-      console.log("OPTIONZZZZ", optionz)
+      //console.log("OPTIONZZZZ", optionz)
       chrome.tabs.sendMessage(sender.tab.id, {
         action: "recieveOptions",
         options: optionz
       });
-      console.log('done')
     } 
     if (message.action == "hideTitles") {
 
-      console.log('HIDE HIDE !!! ')
-      console.log(sender)
-      console.log(message)
+      //console.log('HIDE HIDE !!! ')
+      //console.log(sender)
+      //console.log(message)
 
       chrome.tabs.sendMessage(sender.tab.id, {
         action: "hello",
@@ -33,7 +32,7 @@
 }())
 
 function bgHello() {
-  console.log("bg hello!!")
+  //console.log("bg hello!!")
 }
 
 async function getOptions() {

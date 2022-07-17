@@ -8,24 +8,21 @@ let globalCountId = 0;
 
 // https://github.com/otiai10/chrome-extension-es6-import
 (async () => {
-  console.log('hello!!!')
+  //console.log('hello!!!')
   hi() // https://stackoverflow.com/questions/19717126/chrome-extension-referencing-calling-other-script-functions-from-a-content-scrip
-  console.log(videoQueryStringConst)
-  console.log(imageQueryStringConst)
+  //console.log(videoQueryStringConst)
+  //console.log(imageQueryStringConst)
   // let css = initInjectCSS("grid")
   let idsPromise = initIdsOnEveryLink()
   setupListener()
-  console.log("1         START")
-  // await getOptions2()
-  console.log("2         END")
   optionsExt = await getOptions(); // Common.js
   initAddedClasses()
   initOrderingSort()
-  console.log("optionsExt")
-  console.log(optionsExt)
+  //console.log("optionsExt")
+  //console.log(optionsExt)
   queue = new Queue( async (ele) => { doThumbnailAux(ele) }, async (ele) => { doFreezeFrame(ele) });
-  console.log("queue")
-  console.log(queue)
+  //console.log("queue")
+  //console.log(queue)
   
   await idsPromise
   await initIntersectionObs() 
@@ -63,16 +60,16 @@ function initInjectCSS(css) {
 
 function setupListener() {
   chrome.runtime.onMessage.addListener(function (message) {
-    console.log("Content Script - MSG FROM BACKGROUND -", message)
+    //console.log("Content Script - MSG FROM BACKGROUND -", message)
     if (message.action == "actiontime") {
       run();
     } 
     if (message.action == "hello") {
-      console.log("he said hello !")
+      //console.log("he said hello !")
     }
     if (message.action == "recieveOptions") {
-      console.log("Got options")
-      console.log(message.options) //'options' name is a chrome thing. By coincidence i happen to be retrieving a vairable i also named options // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage#parameters                                    
+      //console.log("Got options")
+      //console.log(message.options) //'options' name is a chrome thing. By coincidence i happen to be retrieving a vairable i also named options // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage#parameters                                    
       optionsExt = message.options
     }
   });  
@@ -99,7 +96,6 @@ const doThumbnailAux = (target) => {
   else {
     makeDefaultThumbnail(target)
   }
-  // console.log("done with thumbnail inside", target)
 }
 
 const doFreezeFrame = (target) => {
@@ -159,19 +155,8 @@ function initSplitItems() {
   let pages = [];
   let page; 
   let chunck = optionsExt.pageSize;
-  // console.log("chunck")
-  // console.log(chunck)
-  // console.log(chunck)
-  // console.log(chunck)
   let everyFileInDir = document.querySelectorAll("body > table > tbody > tr");
   let everyFileInDirArr = Array.from(everyFileInDir);
-// console.log("everyFileInDirArr.length ")
-// console.log(everyFileInDirArr.length)
-//   let loopLength = chunck > everyFileInDirArr.length ? chunck : everyFileInDirArr.length;
-//   console.log("loopLength")
-//   console.log(loopLength)
-//   console.log("chunck > everyFileInDirArr.length")
-//   console.log(chunck > )
   // Split into chuncks
   for (let i=0; i < everyFileInDirArr.length; i = i + chunck) {
     page = everyFileInDirArr.slice(i, i + chunck);
@@ -370,7 +355,7 @@ function initIntersectionObsVisibililty() {
       // console.log("isIntersecting " + entry.target.id ,entry.isIntersecting, entry.target)
       
       if (entry.isIntersecting && entry.target.querySelector('.item_img')) {
-        console.log("intersecting", entry.target)
+        //console.log("intersecting", entry.target)
         entry.target.querySelector('.item_img').style.visibility = "visible";
       } 
       
@@ -404,7 +389,6 @@ function initIntersectionObs() {
     threshold: 0,
     rootMargin: `${offsetMargin}px 0px ${offsetMargin}px 0px`
   }
-  // console.log("observer optiosn:" ,options)
   const observer = new IntersectionObserver( (entries) => {
     entries.forEach( entry => {
       if (entry.isIntersecting) {
@@ -429,7 +413,6 @@ function initIntersectionObs() {
           let bounding = entry.target.getBoundingClientRect();
 
           if ( (bounding.bottom >= 0 - offsetMargin)  && (bounding.top <= window.innerHeight + offsetMargin) && !(entry.target.classList.contains("item_wrap") || entry.target.classList.contains("nothing_wrap")) ) { 
-            // console.log(count, '----------------------------------')
             
             observer.unobserve(entry.target)
             queue.enqueue(entry.target)
@@ -534,7 +517,7 @@ function setupVideo(vid) {
   const intervalTimeout = 800
   vid.addEventListener("mouseenter", (e) => {
     let hovering = true;
-    console.log(e.target)
+    //console.log(e.target)
     e.target.style.visibility = "visible";
 
     previewVid(vid, vid.duration / divide)
@@ -566,7 +549,6 @@ function setupImage(tr) {
     let asjk = tr.querySelector('.item_img')
     // tr.querySelector('.item_img').addEventListener('mouseover', e => {
     asjk.addEventListener('mouseover', e => {
-      // console.log(e.target)
       e.target.style.visibility = "visible"
     })
 }
