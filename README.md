@@ -11,7 +11,7 @@ Feel free to contribute!
  `$ web-ext run -t chromium`  To run in chrome.   
 ### To build, 'compile' and package:  
  1. `$ google-closure-compiler -O SIMPLE  ./main/content-script.js --js_output_file ./main/content-script.min.js`   
- 2. `$ web-ext build --overwrite-dest --ignore-files ./main/content-script.js`                   
+ 2. `$ web-ext build --overwrite-dest --ignore-files ./main/content-script.js ./store-assets`                   
 
 
 ##### Note
