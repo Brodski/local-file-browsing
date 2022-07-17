@@ -47,7 +47,7 @@ async function getOptions() {
     isAdvPreview: false,
     sort: 'default-sort',
     darkmode: null,
-    pageSize: 50,
+    pageSize: 30,
   });
   return result
 }

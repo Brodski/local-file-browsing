@@ -14,7 +14,7 @@ function hi() {
     isAdvPreview: false,
     sort: 'default-sort',
     darkmode: null,
-    pageSize: 50,
+    pageSize: 30,
   });
   //  result.then((result) => { 
   //   console.log("Got 123: ", result)  
