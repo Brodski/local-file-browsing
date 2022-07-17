@@ -1,7 +1,26 @@
 // import Freezeframe from "freezeframe";
 
-const videoQueryStringConst = "tr a[href$='mp4' i], tr a[href$='webm' i], tr a[href$='m4v' i], tr a[href$='mkv' i]"
-const imageQueryStringConst = "tr a[href$='jpg' i], tr a[href$='gif' i], tr a[href$='jpeg' i], tr a[href$='webp' i], tr a[href$='png' i], tr a[href$='jfif' i], tr a[href$='cms' i]"
+const videoQueryStringConst = `tr a[href$='mp4' i], 
+                               tr a[href$='webm' i], 
+                               tr a[href$='m4v' i], 
+                               tr a[href$='mkv' i]
+                               tr a[href$='mpeg' i]
+                               tr a[href$='ogg' i]
+                               tr a[href$='ogm' i]
+                               tr a[href$='ogv' i]
+                               tr a[href$='avi' i]
+                               `
+const imageQueryStringConst = `tr a[href$='jpg' i],
+                               tr a[href$='avif' i],
+                               tr a[href$='gif' i],
+                               tr a[href$='bmp' i],
+                               tr a[href$='jpeg' i],
+                               tr a[href$='webp' i], 
+                               tr a[href$='png' i], 
+                               tr a[href$='apng' i], 
+                               tr a[href$='svg' i], 
+                               tr a[href$='ico' i]
+                               `
 let optionsExt;
 let queue;
 let globalCountId = 0;

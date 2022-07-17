@@ -1,6 +1,8 @@
 .vscode/
 node_modules/
+node_modules_copy/
 !node_modules/freezeframe/dist/freezeframe.min.js
 
 web-ext-artifacts/
 /main/content-script.min.js
+*.zip

@@ -1,10 +1,18 @@
 {
    "manifest_version": 2,
-   "description": "A better way to browse files: less-restricted from the OS",
-   "name": "Local File Viewer",
+   "description": "A better way to browse files: less-restricted from the OS. Supports Videos and Images currently.",
+   "name": "Better Local File Viewer",
+	"version": "1.0",
+   
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "cwasy_amewicansbetterlocal@hotmail.com"
+		}
+	},
+
    "content_scripts": [ {
       "js": [
-         "node_modules/freezeframe/dist/freezeframe.min.js", 
+         "node_modules_copy/freezeframe/dist/freezeframe.min.js", 
          "main/common.js", 
          "main/Queue.js",  
          "main/content-script.min.js" 
@@ -35,10 +43,9 @@
    },
 
    "web_accessible_resources": [
-     "node_modules/freezeframe/dist/freezeframe.min.js"
+     "node_modules_copy/freezeframe/dist/freezeframe.min.js"
    ],
    "permissions": [
       "tabs", "webNavigation", "storage", "<all_urls>"
-   ],
-   "version": "0.0.2"
+   ]
 }
