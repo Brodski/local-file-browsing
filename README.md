@@ -1,6 +1,6 @@
 Extension for Firefox
 
-## Mozilla Addons: https://addons.mozilla.org/en-GB/firefox/addon/better-local-file-viewer/  
+## [Mozilla Addons link](https://addons.mozilla.org/en-GB/firefox/addon/better-local-file-viewer/)   
 
 "Better Local File Browsing" adds CSS and javascript to the browser when viewing local files.
 
