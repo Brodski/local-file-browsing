@@ -3,11 +3,15 @@
 const videoQueryStringConst = `tr a[href$='mp4' i], 
                                tr a[href$='webm' i], 
                                tr a[href$='m4v' i], 
-                               tr a[href$='mkv' i]
-                               tr a[href$='mpeg' i]
-                               tr a[href$='ogg' i]
-                               tr a[href$='ogm' i]
-                               tr a[href$='ogv' i]
+                               tr a[href$='mkv' i],
+                               tr a[href$='mpeg' i],
+                               tr a[href$='ogg' i],
+                               tr a[href$='ogm' i],
+                               tr a[href$='ogv' i],
+                               tr a[href$='mov' i],
+                               tr a[href$='flv' i],
+                               tr a[href$='f4v ' i],
+                               tr a[href$='wmv' i],
                                tr a[href$='avi' i]
                                `
 const imageQueryStringConst = `tr a[href$='jpg' i],
@@ -19,6 +23,8 @@ const imageQueryStringConst = `tr a[href$='jpg' i],
                                tr a[href$='png' i], 
                                tr a[href$='apng' i], 
                                tr a[href$='svg' i], 
+                               tr a[href$='tiff' i], 
+                               tr a[href$='tif' i], 
                                tr a[href$='ico' i]
                                `
 let optionsExt;
@@ -27,18 +33,12 @@ let globalCountId = 0;
 
 // https://github.com/otiai10/chrome-extension-es6-import
 (async () => {
-  //console.log('hello!!!')
   hi() // https://stackoverflow.com/questions/19717126/chrome-extension-referencing-calling-other-script-functions-from-a-content-scrip
-  //console.log(videoQueryStringConst)
-  //console.log(imageQueryStringConst)
-  // let css = initInjectCSS("grid")
   let idsPromise = initIdsOnEveryLink()
   setupListener()
   optionsExt = await getOptions(); // Common.js
   initAddedClasses()
   initOrderingSort()
-  //console.log("optionsExt")
-  //console.log(optionsExt)
   queue = new Queue( async (ele) => { doThumbnailAux(ele) }, async (ele) => { doFreezeFrame(ele) });
   //console.log("queue")
   //console.log(queue)
@@ -148,7 +148,7 @@ function initAddedClasses() {
   document.documentElement.style.setProperty('--my-item-height', optionsExt.height+"px");
   document.documentElement.style.setProperty('--my-grid-width', optionsExt.width + "px");
   
-
+  // console.log("init - optionsExt.darkmode: ", optionsExt.darkmode)
   if (optionsExt.hideMetadata){
     document.querySelector('body').classList.toggle('hide_metadata')
   }
@@ -555,7 +555,6 @@ function setupVideo(vid) {
 }
 
 function setupImage(tr) {
-  // debugger
   setTimeout( () => {
     let img = tr.querySelector('td:nth-child(1)')
     let size = tr.querySelector('td:nth-child(2)')

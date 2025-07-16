@@ -130,6 +130,9 @@ table.ellipsis > tbody > tr > td {
 /********      Top Heading     **********/
 /****************************************/
 
+body > table > thead.mainHeading {
+  display: none;
+}
 body > table > thead > tr {
   display: inline-flex;
   width: 100%;

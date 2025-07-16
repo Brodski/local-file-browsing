@@ -5,14 +5,17 @@ const defaultWidth = 150;
 const defaultPageSize = 30;
 
 (async () => {
-  restore_options()
-  // let x = browser.extension.getBackgroundPage()
-  //console.log("browserextension.getBackgroundPage(), ")
-  //console.log(x.bgHello())
-
-  // setupListener()
+  window.addEventListener("DOMContentLoaded", (e) => {
+    restore_options()
+  })
 })();
 
+window.addEventListener("DOMContentLoaded", (e) => {
+  window.addEventListener('load', () => { onDropdownChange() })
+  document.getElementById('themes').addEventListener("change", ()=> onDropdownChange() )
+  document.getElementById('save').addEventListener('click', save);
+  // document.getElementById('test').addEventListener('click', hideTitlesMsgBg);
+})
 
 async function save() {
 
@@ -56,7 +59,6 @@ async function save() {
   });
 
   res.then( (res) => {
-    //console.log("done", res); 
     let saveMsg = document.querySelector("#saveMsg")
     saveMsg.textContent = "Saved";
     saveMsg.style.color = "red";
@@ -71,10 +73,9 @@ async function restore_options() {
   let optionsExt = browser.extension.getBackgroundPage().getOptions()
   // optionsExt = mainContent.getOptions();
   // optionsExt = getOptions();
-  //console.log("optionsExt", optionsExt)
   const onError = (err) => { console.log("Error: ", err) }
   const onGot = (result) => { console.log("Got: ", result)  }
-  optionsExt.then((result) => { 
+  optionsExt.then((result) => {
     //console.log("Got: ", result)  
     
     document.querySelector("#height").value = result.height
@@ -102,11 +103,6 @@ function onDropdownChange() {
   let select = document.getElementById('themes')
   select.classList = select.options[select.selectedIndex].className
 }
-
-window.addEventListener('load', () => { onDropdownChange() })
-document.getElementById('themes').addEventListener("change", ()=> onDropdownChange() )
-document.getElementById('save').addEventListener('click', save);
-// document.getElementById('test').addEventListener('click', hideTitlesMsgBg);
 
 function hideTitlesMsgBg() {
   chrome.runtime.sendMessage({

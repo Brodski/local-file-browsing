@@ -2,7 +2,7 @@
    "manifest_version": 2,
    "description": "A better way to browse files: less-restricted from the OS. Supports Videos and Images currently.",
    "name": "Better Local File Viewer",
-	"version": "1.0",
+	"version": "1.1",
    
 	"browser_specific_settings": {
 		"gecko": {
@@ -12,10 +12,10 @@
 
    "content_scripts": [ {
       "js": [
-         "node_modules_copy/freezeframe/dist/freezeframe.min.js", 
+         "node_modules/freezeframe/dist/freezeframe.min.js", 
          "main/common.js", 
          "main/Queue.js",  
-         "main/content-script.min.js" 
+         "main/content-script.js" 
       ],
       "css": ["main/styleGrid.css"],
       "run_at": "document_idle",
@@ -35,7 +35,7 @@
 		"default_icon":{
 			"16": "/popup/icon16.png"
 		},
-		"default_title": "File Viewer On Browser",
+		"default_title": "Better local File Browsing",
 		"default_popup": "popup/popup.html"
 	},
    "icons": {
@@ -43,7 +43,7 @@
    },
 
    "web_accessible_resources": [
-     "node_modules_copy/freezeframe/dist/freezeframe.min.js"
+     "node_modules/freezeframe/dist/freezeframe.min.js"
    ],
    "permissions": [
       "tabs", "webNavigation", "storage", "<all_urls>"

@@ -12,18 +12,12 @@
       //console.log("recieved getOptions from BS")
       //console.log("Background, sender.tab.id", sender.tab.id)
       let optionz = await getOptions()
-      //console.log("OPTIONZZZZ", optionz)
       chrome.tabs.sendMessage(sender.tab.id, {
         action: "recieveOptions",
         options: optionz
       });
     } 
     if (message.action == "hideTitles") {
-
-      //console.log('HIDE HIDE !!! ')
-      //console.log(sender)
-      //console.log(message)
-
       chrome.tabs.sendMessage(sender.tab.id, {
         action: "hello",
       });

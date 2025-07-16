@@ -21,7 +21,6 @@ class Queue {
     this.items.push(item)
     // console.log("Queue -----> adding idx=", idx, item)
     if ( this.isRunning == false) {
-    // if (true || this.isRunning == false) {
       this.processQueue()
     }
   }
